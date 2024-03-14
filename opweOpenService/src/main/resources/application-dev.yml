@@ -1,0 +1,27 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: opwe-open-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 101.200.41.70:8848
+#      config:
+#        file-extension: yaml
+#        prefix: ${spring.application.name}
+#        # dataID  ${prefix}-${spring.profiles.active}.${file-extension}
+#        # 命名空间 默认 public
+#        namespace: public
+#        # 配置组  默认 DEFAULT_GROUP
+#        group: opwe
+
+#eureka:
+#  client:
+#    service-url:
+#      default-zone: http://127.0.0.1:8761/eureka
+#  instance:
+#    instance-id: opweOpenService01
+#    prefer-ip-address: true
+

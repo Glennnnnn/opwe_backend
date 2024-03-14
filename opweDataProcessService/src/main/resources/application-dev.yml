@@ -1,0 +1,17 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: opwe-data-process-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 101.200.41.70:8848
+#eureka:
+#  client:
+#    service-url:
+#      default-zone: http://127.0.0.1:8761/eureka
+#  instance:
+##    instance-id: opweDataProcessService01
+#    prefer-ip-address: true
