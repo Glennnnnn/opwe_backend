@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: opweElasticseach
+    name: opwe-elasticsearch-service
   datasource:
     username: developer01
     password: Dev123456!

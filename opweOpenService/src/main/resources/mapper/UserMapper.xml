@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljl.opweOpenService.dao.UserMapper">
+    <resultMap id="result" type="com.ljl.opweOpenService.entity.pos.UserPo">
+        <result property="userId" column="user_id" />
+        <result property="username" column="username" />
+        <result property="password" column="password"/>
+        <result property="userRoleName" column="user_role_name" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time"/>
+        <result property="createBy" column="create_by" />
+        <result property="updateBy" column="update_by" />
+        <result property="delFlag" column="del_flag"/>
+        <result property="status" column="status" />
+    </resultMap>
+    
+    <select id="checkUserByName" resultMap="result">
+        SELECT * From user where username = #{username}
+    </select>
+
+    <select id="queryBasicUserInfoByName" resultMap="result">
+        SELECT user_id, username, user_role_name FROM user where username = #{username}
+    </select>
+
+    <select id="queryBasicUserInfoById" resultMap="result">
+        SELECT user_id, username, user_role_name FROM user where user_id = #{userId}
+    </select>
+
+</mapper>

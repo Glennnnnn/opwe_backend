@@ -1,6 +1,7 @@
 package com.ljl.opweOpenService.controller;
 
-import com.ljl.opweOpenService.entity.ResponseResultPo;
+import com.ljl.opweOpenService.entity.common.ResponseResultPo;
+import com.ljl.opweOpenService.service.AuthFeignService;
 import com.ljl.opweOpenService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/getUserName")
+    @Autowired
+    AuthFeignService authFeignService;
+
+    @GetMapping("/getAuthUserName")
     public ResponseResultPo getUserName(){
         ResponseResultPo responseResultPo = new ResponseResultPo();
-        responseResultPo.setData(userService.checkUserName());
+        responseResultPo.setData(authFeignService.getAuthUserName());
         responseResultPo.setCode(HttpStatus.OK.value());
         responseResultPo.setMsg("success");
         return responseResultPo;

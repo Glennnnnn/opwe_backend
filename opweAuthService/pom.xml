@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>opweOpenService</artifactId>
+    <artifactId>opweAuthService</artifactId><build><plugins><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><configuration><source>16</source><target>16</target></configuration></plugin></plugins></build>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -20,7 +20,10 @@
         <slf4j.version>2.0.7</slf4j.version>
         <slf4j-log4j12.version>2.0.7</slf4j-log4j12.version>
         <mysql.version>8.0.28</mysql.version>
-        <mybatis.version>2.2.2</mybatis.version>
+        <mybatis.version>3.0.2</mybatis.version>
+        <oauth2.version>2.2.5.RELEASE</oauth2.version>
+<!--        <spring-cloud-security>2.2.5.RELEASE</spring-cloud-security>-->
+        <jwt.version>0.9.1</jwt.version>
     </properties>
 
     <dependencies>
@@ -66,6 +69,16 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
         </dependency>
+        <!-- security dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-authorization-server</artifactId>
+<!--            <version>1.0.2</version>-->
+        </dependency>
         <!--json解析-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -83,7 +96,27 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- 引入分布式session -->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
         <!--redis dependencies-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-redis</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-pool2</artifactId>-->
+<!--        </dependency>-->
+        <!-- 添加 openfeign 框架依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <!--redis依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -92,15 +125,25 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-        <!-- 添加 openfeign 框架依赖 -->
+        <!--jwt-->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jwt.version}</version>
         </dependency>
-<!--        load balancer-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-loadbalancer</artifactId>
-        </dependency>
+<!--        for login page and consent page which is not essential-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.webjars</groupId>-->
+<!--            <artifactId>webjars-locator-core</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.webjars</groupId>-->
+<!--            <artifactId>bootstrap</artifactId>-->
+<!--            <version>5.2.3</version>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

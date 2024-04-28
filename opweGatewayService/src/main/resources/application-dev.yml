@@ -5,26 +5,33 @@ spring:
   application:
     name: opwe-gateway-service
   cloud:
-    #gateway settings
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-#      routes:
-#        - id: opwe-data-process-service
-#          uri: lb://opwe-data-process-service
-#          predicates:
-#            - Path=/opweDataProcessService/**
-#
-#        - id: opwe-open-service
-#          uri: lb://opwe-open-service
-#          predicates:
-#            - Path=/opweOpenService/**
     #nacos settings
     nacos:
       discovery:
         server-addr: 101.200.41.70:8848
+    #gateway settings
+    gateway:
+      ## 路由
+      routes:
+        ## id只要唯一即可，名称任意
+        - id: opwe-auth-service
+          uri: lb://opwe-auth-service
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/auth/**
+        - id: oauth2-cloud-order
+          uri: lb://oauth2-cloud-service
+          predicates:
+            ## Path Route Predicate Factory断言
+            - Path=/test/**
 #  instance:
 #    instance-id: opweOpenService01
 #    prefer-ip-address: true
 
+oauth2:
+  cloud:
+    sys:
+      parameter:
+        ignoreUrls:
+          - /oauth/token
+          - /oauth/authorize
