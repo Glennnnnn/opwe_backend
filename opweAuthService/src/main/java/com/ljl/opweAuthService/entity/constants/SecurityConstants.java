@@ -10,6 +10,57 @@ package com.ljl.opweAuthService.entity.constants;
  */
 public class SecurityConstants {
     /**
+     * 授权确认页面地址
+     */
+    public static final String DEVICE_ACTIVATED_URI = "http://127.0.0.1:5173/activated";
+
+    /**
+     * 授权确认页面地址
+     */
+    public static final String DEVICE_ACTIVATE_URI = "http://127.0.0.1:5173/activate";
+
+    /**
+     * 授权确认页面地址
+     */
+    public static final String CONSENT_PAGE_URI = "http://127.0.0.1:3000/consentPage";
+//    public static final String CONSENT_PAGE_URI = "https://www.baidu.com";
+
+    /**
+     * 微信登录相关参数——openid：用户唯一id
+     */
+    public static final String WECHAT_PARAMETER_OPENID = "openid";
+
+    /**
+     * 微信登录相关参数——forcePopup：强制此次授权需要用户弹窗确认
+     */
+    public static final String WECHAT_PARAMETER_FORCE_POPUP = "forcePopup";
+
+    /**
+     * 微信登录相关参数——secret：微信的应用秘钥
+     */
+    public static final String WECHAT_PARAMETER_SECRET = "secret";
+
+    /**
+     * 微信登录相关参数——appid：微信的应用id
+     */
+    public static final String WECHAT_PARAMETER_APPID = "appid";
+
+    /**
+     * 三方登录类型——微信
+     */
+    public static final String THIRD_LOGIN_WECHAT = "wechat";
+
+    /**
+     * 三方登录类型——Gitee
+     */
+    public static final String THIRD_LOGIN_GITEE = "gitee";
+
+    /**
+     * 三方登录类型——Github
+     */
+    public static final String THIRD_LOGIN_GITHUB = "github";
+
+    /**
      * 随机字符串请求头名字
      */
     public static final String NONCE_HEADER_NAME = "nonceId";
@@ -58,5 +109,4 @@ public class SecurityConstants {
      * 自定义 grant type —— 短信验证码 —— 短信验证码的key
      */
     public static final String OAUTH_PARAMETER_NAME_SMS_CAPTCHA = "sms_captcha";
-
 }

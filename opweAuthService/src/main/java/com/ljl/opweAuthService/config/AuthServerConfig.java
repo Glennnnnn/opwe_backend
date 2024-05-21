@@ -25,6 +25,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
@@ -32,15 +35,18 @@ import org.springframework.security.oauth2.server.authorization.JdbcOAuth2Author
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.UrlUtils;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -53,6 +59,8 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.ljl.opweAuthService.entity.constants.SecurityConstants.CONSENT_PAGE_URI;
+
 /**
  * @Author Liu Jialin
  * @Date 2024/4/9 20:25
@@ -64,6 +72,7 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebSecurity
 public class AuthServerConfig {
+
     @Value("${server.port}")
     int serverPort;
 
@@ -91,7 +100,20 @@ public class AuthServerConfig {
         http
             //为 OAuth2 认证服务器添加 OIDC 支持
             .getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-            .oidc(Customizer.withDefaults());
+            .oidc(Customizer.withDefaults())
+            .authorizationEndpoint(authorizationEndpoint -> {
+                // 校验授权确认页面是否为完整路径；是否是前后端分离的页面
+                boolean absoluteUrl = UrlUtils.isAbsoluteUrl(CONSENT_PAGE_URI);
+                // 如果是分离页面则重定向，否则转发请求
+                authorizationEndpoint.consentPage(CONSENT_PAGE_URI);
+                if (absoluteUrl) {
+                    // 适配前后端分离的授权确认页面，成功/失败响应json
+                    authorizationEndpoint.errorResponseHandler(new ConsentAuthenticationFailureHandler());
+                    authorizationEndpoint.authorizationResponseHandler(new ConsentAuthorizationSuccessHandler());
+                }
+            }
+        );
+
 
         http
             .exceptionHandling(e -> e
@@ -299,10 +321,35 @@ public class AuthServerConfig {
 ////                        .build())
 //                .build();
 //
+        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                // 客户端id
+                .clientId("opwe-client")
+                // 客户端秘钥，使用密码解析器加密
+                .clientSecret(passwordEncoder().encode("123456"))
+                // 客户端认证方式，基于请求头的认证
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                // 配置资源服务器使用该客户端获取授权时支持的方式
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                // 客户端添加自定义认证
+                .authorizationGrantType(new AuthorizationGrantType(SecurityConstants.GRANT_TYPE_SMS_CODE))
+                // 授权码模式回调地址，oauth2.1已改为精准匹配，不能只设置域名，并且屏蔽了localhost，本机使用127.0.0.1访问
+                .redirectUri("http://127.0.0.1:8085/login/oauth2/code/messaging-client-oidc")
+                .redirectUri("https://www.baidu.com")
+                // 该客户端的授权范围，OPENID与PROFILE是IdToken的scope，获取授权时请求OPENID的scope时认证服务会返回IdToken
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                // 自定scope
+                .scope("message.read")
+                .scope("message.write")
+                // 客户端设置，设置用户需要确认授权
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .build();
         JdbcRegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
-//        if (null == registeredClientRepository.findByClientId("client")) {
-//            registeredClientRepository.save(registeredClient);
-//        }
+        if (null == registeredClientRepository.findByClientId(registeredClient.getClientId())) {
+            registeredClientRepository.save(registeredClient);
+        }
 
         return registeredClientRepository;
 //        return new InMemoryRegisteredClientRepository(registeredClient);
