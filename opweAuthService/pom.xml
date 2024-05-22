@@ -97,11 +97,11 @@
             </exclusions>
         </dependency>
 
-        <!-- 引入分布式session -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.session</groupId>-->
-<!--            <artifactId>spring-session-data-redis</artifactId>-->
-<!--        </dependency>-->
+        <!-- 引入分布式session-->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
         <!--redis dependencies-->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->

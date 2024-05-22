@@ -15,6 +15,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.jackson2.CoreJackson2Module;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * @Author Liu Jialin
@@ -27,6 +28,7 @@ import org.springframework.security.jackson2.CoreJackson2Module;
 @Configuration
 @RequiredArgsConstructor
 @EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
+@EnableRedisHttpSession(redisNamespace = "opwe:session")
 public class RedisConfig {
     private final Jackson2ObjectMapperBuilder builder;
 

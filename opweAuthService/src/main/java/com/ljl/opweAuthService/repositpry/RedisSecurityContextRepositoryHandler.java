@@ -1,6 +1,7 @@
 package com.ljl.opweAuthService.repositpry;
 
 import com.ljl.opweAuthService.model.security.SupplierDeferredSecurityContext;
+import com.ljl.opweAuthService.utils.Base64Utils;
 import com.ljl.opweAuthService.utils.RedisUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,10 +63,10 @@ public class RedisSecurityContextRepositoryHandler implements SecurityContextRep
         // 如果当前的context是空的，则移除
         SecurityContext emptyContext = this.securityContextHolderStrategy.createEmptyContext();
         if (emptyContext.equals(context)) {
-            redisUtils.delete((SECURITY_CONTEXT_PREFIX_KEY + nonce));
+            redisUtils.delete((SECURITY_CONTEXT_PREFIX_KEY + request.getSession().getId()));
         } else {
             // 保存认证信息
-            redisUtils.set((SECURITY_CONTEXT_PREFIX_KEY + nonce), context, DEFAULT_TIMEOUT_SECONDS);
+            redisUtils.set((SECURITY_CONTEXT_PREFIX_KEY + request.getSession().getId()), context, DEFAULT_TIMEOUT_SECONDS);
         }
     }
 
@@ -98,7 +99,7 @@ public class RedisSecurityContextRepositoryHandler implements SecurityContextRep
 
         String nonce = getNonce(request);
         if (ObjectUtils.isEmpty(nonce)) {
-            return null;
+            return redisUtils.get((SECURITY_CONTEXT_PREFIX_KEY + Base64Utils.base64Decode(request.getSession().getId())));
         }
 
         // 根据缓存id获取认证信息

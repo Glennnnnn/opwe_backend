@@ -75,6 +75,7 @@ public class AuthServerConfig {
 
     @Value("${server.port}")
     int serverPort;
+    private static final String CUSTOM_CONSENT_REDIRECT_URI = "/oauth2/consent/redirect";
 
     @Autowired
     private RedisSecurityContextRepositoryHandler redisSecurityContextRepository;
@@ -94,8 +95,8 @@ public class AuthServerConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
-//        // 使用redis存储、读取登录的认证信息
-//        http.securityContext(context -> context.securityContextRepository(redisSecurityContextRepository));
+        // 使用redis存储、读取登录的认证信息
+        http.securityContext(context -> context.securityContextRepository(redisSecurityContextRepository));
 
         http
             //为 OAuth2 认证服务器添加 OIDC 支持
@@ -103,9 +104,9 @@ public class AuthServerConfig {
             .oidc(Customizer.withDefaults())
             .authorizationEndpoint(authorizationEndpoint -> {
                 // 校验授权确认页面是否为完整路径；是否是前后端分离的页面
-                boolean absoluteUrl = UrlUtils.isAbsoluteUrl(CONSENT_PAGE_URI);
+                boolean absoluteUrl = UrlUtils.isAbsoluteUrl(CUSTOM_CONSENT_REDIRECT_URI);
                 // 如果是分离页面则重定向，否则转发请求
-                authorizationEndpoint.consentPage(CONSENT_PAGE_URI);
+                authorizationEndpoint.consentPage(CUSTOM_CONSENT_REDIRECT_URI);
                 if (absoluteUrl) {
                     // 适配前后端分离的授权确认页面，成功/失败响应json
                     authorizationEndpoint.errorResponseHandler(new ConsentAuthenticationFailureHandler());
@@ -148,7 +149,7 @@ public class AuthServerConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((authorize) ->  authorize
-                .requestMatchers("/assets/**", "/webjars/**", "/login").permitAll()
+                .requestMatchers("/assets/**", "/webjars/**", "/login", "/oauth2/consent/parameters").permitAll()
                 .anyRequest().authenticated()
             )
             // Form login handles the redirect to the login page from the
@@ -175,9 +176,18 @@ public class AuthServerConfig {
                             new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                     )
             );
-
-//        // 使用redis存储、读取登录的认证信息
-//        http.securityContext(context -> context.securityContextRepository(redisSecurityContextRepository));
+//        // 联合身份认证
+//        http.oauth2Login(oauth2Login -> oauth2Login
+//                .loginPage("http://127.0.0.1:3000/login")
+//                .authorizationEndpoint(authorization -> authorization
+//                        .authorizationRequestResolver(this.authorizationRequestResolver(clientRegistrationRepository))
+//                )
+//                .tokenEndpoint(token -> token
+//                        .accessTokenResponseClient(this.accessTokenResponseClient())
+//                )
+//        );
+        // 使用redis存储、读取登录的认证信息
+        http.securityContext(context -> context.securityContextRepository(redisSecurityContextRepository));
 
         return http.build();
     }

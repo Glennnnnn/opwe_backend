@@ -2,6 +2,7 @@ package com.ljl.opweAuthService.handler;
 
 import com.ljl.opweAuthService.entity.common.Result;
 import com.ljl.opweAuthService.entity.constants.SecurityConstants;
+import com.ljl.opweAuthService.utils.Base64Utils;
 import com.ljl.opweAuthService.utils.JsonUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         Result<String> success = Result.success();
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setHeader(SecurityConstants.NONCE_HEADER_NAME,request.getSession().getId());
+        response.setHeader(SecurityConstants.NONCE_HEADER_NAME, request.getSession().getId());
         response.getWriter().write(JsonUtils.objectCovertToJson(success));
         response.getWriter().flush();
     }
