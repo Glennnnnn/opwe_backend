@@ -8,6 +8,12 @@ spring:
     nacos:
       discovery:
         server-addr: 101.200.41.70:8848
+  rabbitmq:
+    host: 47.93.162.44
+    port: 5672
+    virtual-host: /
+    username: glenn
+    password: dev123456!
 #eureka:
 #  client:
 #    service-url:

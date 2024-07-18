@@ -5,21 +5,24 @@ spring:
   application:
     name: opweEurekaServer
   datasource:
-    username: develope01
-    password: Dev123456!
-    url: jdbc:mysql://101.200.41.70/opweDB?useUnicode=true&characterEncoding=utf-8
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: postgres #developer01 #admin
+    password: dev123456!
+    url: jdbc:postgresql://101.200.41.70/opwe_main?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    driver-class-name: org.postgresql.Driver
     hikari:
       #minimum idle time ,default 10，less than 0 or greater than maximum-pool-size will be reset to maximum-pool-siz
-      minimum-idle: 5
+      minimum-idle: 2
       #less than or equal to 0 will be reset to default value of 10；greater than 0 and less than 1 will be reset to minimum-idle
-      maximum-pool-size: 10
+      maximum-pool-size: 5
       max-lifetime: 300000
       idle-timeout: 180000
       connection-timeout: 30000
 eureka:
   client:
+    service-url:
+      defaultZone: http://47.93.162.44:8761/eureka
     register-with-eureka: false
     fetch-registry: false
-    service-url:
-      default-zone: http://localhost:8761/eureka
+#logging:
+#  level:
+#    root: debug

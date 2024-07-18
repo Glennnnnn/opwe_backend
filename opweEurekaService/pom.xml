@@ -15,6 +15,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <mysql.version>8.0.28</mysql.version>
+        <pgsql.versiopn>42.5.0</pgsql.versiopn>
     </properties>
 
     <dependencies>
@@ -30,12 +31,57 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
-        <!--mysql连接池-->
+<!--        &lt;!&ndash;mysql连接池&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>mysql</groupId>-->
+<!--            <artifactId>mysql-connector-java</artifactId>-->
+<!--            <version>${mysql.version}</version>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${pgsql.versiopn}</version>
         </dependency>
     </dependencies>
 
+    <build>
+        <!-- 配置项目的源代码目录，默认为 "src/main/java" -->
+        <sourceDirectory>src/main/java</sourceDirectory>
+
+        <!-- 配置项目的测试代码目录，默认为 "src/test/java" -->
+        <testSourceDirectory>src/test/java</testSourceDirectory>
+
+        <!-- 配置项目的资源文件目录，默认为 "src/main/resources" -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <!-- 配置项目的输出目录，默认为 "target/classes" -->
+        <outputDirectory>target/classes</outputDirectory>
+        <!-- 配置项目的插件列表，用于自定义项目构建过程 -->
+        <plugins>
+            <plugin>
+                <!-- 插件的坐标信息 -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- 插件的配置信息 -->
+                <configuration>
+                    <mainClass>com.ljl.opweEureka.OpweEurekaServerApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- 可以声明其他插件 -->
+        </plugins>
+
+        <!-- 其他构建相关的配置 -->
+    </build>
 </project>

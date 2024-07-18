@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljl.opweUserService.dao.UserMapper">
+    <resultMap id="result" type="com.ljl.opweUserService.entity.pos.UserPo">
+        <result property="userId" column="user_id" />
+        <result property="userName" column="user_name" />
+        <result property="userEmail" column="user_email"/>
+        <result property="userPhone" column="user_phone" />
+        <result property="userCreateDate" column="user_create_date" />
+        <result property="userUpdateDate" column="user_update_date"/>
+        <result property="userLoginDate" column="user_login_date" />
+        <result property="userCredits" column="user_credits" />
+    </resultMap>
+    
+    <insert id="insertUser" parameterType="com.ljl.opweUserService.entity.pos.UserPo">
+        INSERT INTO opwe_user(
+            user_id,
+            user_name,
+            user_email,
+            user_phone,
+            user_create_date,
+            user_update_date,
+            user_login_date,
+            user_credits
+        )
+        VALUES
+            (
+                #{userId},
+                #{userName},
+                #{userEmail},
+                #{userPhone},
+                #{userCreateDate},
+                #{userUpdateDate},
+                #{userLoginDate},
+                #{userCredits}
+            )
+    </insert>
+
+    <update id="updateUserCredit">
+        UPDATE opwe_user SET user_credits = #{userCredits} WHERE user_id = #{userId}
+    </update>
+
+    <select id="queryCurUserCredit" parameterType="java.lang.Long" resultType="java.lang.Float">
+        SELECT user_credits FROM opwe_user WHERE user_id = #{user_id}
+    </select>
+
+</mapper>

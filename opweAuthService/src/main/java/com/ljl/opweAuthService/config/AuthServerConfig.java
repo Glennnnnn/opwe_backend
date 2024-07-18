@@ -107,11 +107,11 @@ public class AuthServerConfig {
                 boolean absoluteUrl = UrlUtils.isAbsoluteUrl(CUSTOM_CONSENT_REDIRECT_URI);
                 // 如果是分离页面则重定向，否则转发请求
                 authorizationEndpoint.consentPage(CUSTOM_CONSENT_REDIRECT_URI);
-                if (absoluteUrl) {
+
                     // 适配前后端分离的授权确认页面，成功/失败响应json
-                    authorizationEndpoint.errorResponseHandler(new ConsentAuthenticationFailureHandler());
-                    authorizationEndpoint.authorizationResponseHandler(new ConsentAuthorizationSuccessHandler());
-                }
+                authorizationEndpoint.errorResponseHandler(new ConsentAuthenticationFailureHandler());
+                authorizationEndpoint.authorizationResponseHandler(new ConsentAuthorizationSuccessHandler());
+
             }
         );
 
@@ -343,10 +343,10 @@ public class AuthServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 // 客户端添加自定义认证
-                .authorizationGrantType(new AuthorizationGrantType(SecurityConstants.GRANT_TYPE_SMS_CODE))
+                //.authorizationGrantType(new AuthorizationGrantType(SecurityConstants.GRANT_TYPE_SMS_CODE))
                 // 授权码模式回调地址，oauth2.1已改为精准匹配，不能只设置域名，并且屏蔽了localhost，本机使用127.0.0.1访问
                 .redirectUri("http://127.0.0.1:8085/login/oauth2/code/messaging-client-oidc")
-                .redirectUri("https://www.baidu.com")
+                .redirectUri("http://127.0.0.1:3000")
                 // 该客户端的授权范围，OPENID与PROFILE是IdToken的scope，获取授权时请求OPENID的scope时认证服务会返回IdToken
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)

@@ -84,7 +84,20 @@ public class OauthConsentController {
         this.redirectStrategy.sendRedirect(request, response, uriString);
     }
 
+//    @GetMapping(value = "/oauth2/consent")
+//    public String consent(Principal principal, Model model,
+//                          @RequestParam(OAuth2ParameterNames.CLIENT_ID) String clientId,
+//                          @RequestParam(OAuth2ParameterNames.SCOPE) String scope,
+//                          @RequestParam(OAuth2ParameterNames.STATE) String state,
+//                          @RequestParam(name = OAuth2ParameterNames.USER_CODE, required = false) String userCode) {
+//
+//        // 获取consent页面所需的参数
+//        Map<String, Object> consentParameters = getConsentParameters(scope, state, clientId, userCode, principal);
+//        // 转至model中，让框架渲染页面
+//        consentParameters.forEach(model::addAttribute);
 
+//        return "consent";
+//    }
     @ResponseBody
     @GetMapping(value = "/oauth2/consent/parameters")
     public Result<Map<String, Object>> consentParameters(Principal principal,

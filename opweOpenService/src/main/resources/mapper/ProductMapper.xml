@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljl.opweOpenService.dao.ProductMapper">
+    <resultMap id="result" type="com.ljl.opweOpenService.entity.pos.ProductPo">
+        <result property="productId" column="product_id" />
+        <result property="productName" column="product_name" />
+        <result property="productDesc" column="product_desc"/>
+        <result property="productImage" column="product_image" />
+        <result property="productStatus" column="product_status" />
+        <result property="productPrice" column="product_price" />
+        <result property="productStock" column="product_stock" />
+        <result property="productOnHold" column="product_on_hold" />
+    </resultMap>
+
+    <insert id="insertSingleProduct" parameterType="com.ljl.opweOpenService.entity.pos.ProductPo">
+        INSERT INTO main_product(
+            product_id,
+            product_name,
+            product_desc,
+            product_image,
+            product_status,
+            product_price,
+            product_stock,
+            product_on_hold
+        )
+        VALUES
+        (
+            #{productId},
+            #{productName},
+            #{productDesc},
+            #{productImage},
+            #{productStatus},
+            #{productPrice},
+            #{productStock},
+            #{productOnHold}
+        )
+    </insert>
+
+    <select id="queryAllProduct" resultMap="result">
+        SELECT * FROM main_product
+    </select>
+
+    <select id="queryProductStockAndOnHold" resultMap="result">
+        SELECT
+            product_id, product_stock, product_on_hold, product_status
+        FROM
+            main_product
+        WHERE
+            product_id = #{productId}
+    </select>
+
+    <select id="queryProductOnHold" resultType="java.lang.Integer">
+        SELECT
+            product_on_hold
+        FROM
+            main_product
+        WHERE
+            product_id = #{productId}
+    </select>
+
+    <update id="updateProductOnHold">
+        UPDATE
+            main_product
+        SET
+            product_on_hold = #{productOnHold}
+        WHERE
+            product_id = #{productId}
+    </update>
+
+
+</mapper>

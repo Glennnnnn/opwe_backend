@@ -42,17 +42,17 @@ public class ConsentAuthorizationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // 获取将要重定向的回调地址
         String redirectUri = this.getAuthorizationResponseUri(authentication);
-        if (request.getMethod().equals(HttpMethod.POST.name()) && UrlUtils.isAbsoluteUrl(CONSENT_PAGE_URI)) {
+//        if (request.getMethod().equals(HttpMethod.POST.name()) && UrlUtils.isAbsoluteUrl(CONSENT_PAGE_URI)) {
             // 如果是post请求并且CONSENT_PAGE_URI是完整的地址，则响应json
-            Result<String> success = Result.success(redirectUri);
-            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.getWriter().write(JsonUtils.objectCovertToJson(success));
-            response.getWriter().flush();
-            return;
-        }
+        Result<String> success = Result.success(redirectUri);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(JsonUtils.objectCovertToJson(success));
+        response.getWriter().flush();
+        return;
+//        }
         // 否则重定向至回调地址
-        this.redirectStrategy.sendRedirect(request, response, redirectUri);
+//        this.redirectStrategy.sendRedirect(request, response, redirectUri);
     }
 
     /**
