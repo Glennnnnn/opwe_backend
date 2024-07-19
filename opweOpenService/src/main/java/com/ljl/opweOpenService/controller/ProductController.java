@@ -2,6 +2,7 @@ package com.ljl.opweOpenService.controller;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ljl.opweOpenService.entity.common.ResponseResultPo;
+import com.ljl.opweOpenService.entity.dtos.NewProductRequestDto;
 import com.ljl.opweOpenService.entity.pos.ProductPo;
 import com.ljl.opweOpenService.exceptions.GeneralException;
 import com.ljl.opweOpenService.service.ProductService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -60,6 +62,26 @@ public class ProductController {
             e.printStackTrace();
             responseResultPo.setCode(HttpStatus.BAD_REQUEST.value());
             responseResultPo.setMsg("failed");
+        }
+        return responseResultPo;
+    }
+
+    @PostMapping("/newProductWithImg")
+    public ResponseResultPo createNewProductWithImg(@RequestPart("productData") NewProductRequestDto productData, @RequestPart("productImg") MultipartFile productImg){
+        ResponseResultPo responseResultPo = new ResponseResultPo<>();
+        try{
+            System.out.println(productData);
+//            responseResultPo.setCode(HttpStatus.OK.value());
+//            responseResultPo.setMsg(port);
+//            responseResultPo.setData(result);
+//        }catch(GeneralException ge){
+//            ge.printStackTrace();
+//            responseResultPo.setCode(ge.getExceptionCode());
+//            responseResultPo.setMsg(ge.getMessage());
+        }catch(Exception e){
+            e.printStackTrace();
+            responseResultPo.setCode(HttpStatus.BAD_REQUEST.value());
+            responseResultPo.setMsg("unknown failed");
         }
         return responseResultPo;
     }
