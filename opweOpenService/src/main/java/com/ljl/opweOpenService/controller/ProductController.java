@@ -2,7 +2,7 @@ package com.ljl.opweOpenService.controller;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ljl.opweOpenService.entity.common.ResponseResultPo;
-import com.ljl.opweOpenService.entity.dtos.NewProductRequestDto;
+import com.ljl.opweOpenService.entity.dtos.ProductWithImgDto;
 import com.ljl.opweOpenService.entity.pos.ProductPo;
 import com.ljl.opweOpenService.exceptions.GeneralException;
 import com.ljl.opweOpenService.service.ProductService;
@@ -67,12 +67,13 @@ public class ProductController {
     }
 
     @PostMapping("/newProductWithImg")
-    public ResponseResultPo createNewProductWithImg(@RequestPart("productData") NewProductRequestDto productData, @RequestPart("productImg") MultipartFile productImg){
+    public ResponseResultPo createNewProductWithImg(@RequestPart("productData") ProductWithImgDto productWithTagsDto, @RequestPart(value = "productImgs", required = false) List<MultipartFile> productImgs){
         ResponseResultPo responseResultPo = new ResponseResultPo<>();
         try{
-            System.out.println(productData);
-//            responseResultPo.setCode(HttpStatus.OK.value());
-//            responseResultPo.setMsg(port);
+            System.out.println(productWithTagsDto);
+            System.out.println(productImgs);
+            responseResultPo.setCode(HttpStatus.OK.value());
+            responseResultPo.setMsg("SUCCESS");
 //            responseResultPo.setData(result);
 //        }catch(GeneralException ge){
 //            ge.printStackTrace();
