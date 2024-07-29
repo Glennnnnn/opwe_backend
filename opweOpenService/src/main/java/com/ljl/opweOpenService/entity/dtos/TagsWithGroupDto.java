@@ -20,5 +20,5 @@ import java.util.List;
 @NoArgsConstructor
 public class TagsWithGroupDto {
     private String tagName;
-    private List<String> tagValueList;
+    private List<TagValueWithIdDto> tagValueList;
 }

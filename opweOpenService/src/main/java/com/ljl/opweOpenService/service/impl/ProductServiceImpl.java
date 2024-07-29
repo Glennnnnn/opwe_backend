@@ -2,6 +2,7 @@ package com.ljl.opweOpenService.service.impl;
 
 import com.ljl.opweOpenService.dao.ProductMapper;
 import com.ljl.opweOpenService.entity.constants.ProductExceptionConst;
+import com.ljl.opweOpenService.entity.dtos.ProductWithImgDto;
 import com.ljl.opweOpenService.entity.pos.ProductPo;
 import com.ljl.opweOpenService.exceptions.GeneralException;
 import com.ljl.opweOpenService.service.ProductService;
@@ -9,6 +10,7 @@ import com.ljl.opweOpenService.utils.SnowflakeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -55,5 +57,10 @@ public class ProductServiceImpl implements ProductService {
         }
         productMapper.updateProductOnHold(productId, postProduct.getProductOnHold() + amount);
         return 0;
+    }
+
+    @Override
+    public void insertProductWithImg(ProductWithImgDto productWithTagsDto, List<MultipartFile> productImgs) {
+
     }
 }

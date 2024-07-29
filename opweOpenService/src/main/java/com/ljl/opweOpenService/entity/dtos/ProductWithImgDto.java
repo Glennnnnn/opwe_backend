@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * @Author Liu Jialin
  * @Date 2024/7/28 18:49
@@ -23,6 +25,7 @@ public class ProductWithImgDto {
     private MultipartFile productImage;
     private Long productStatus;
     private Float productPrice;
+    private List<Long> productTags;
     private Integer productStock;
     private Integer productOnHold;
 }

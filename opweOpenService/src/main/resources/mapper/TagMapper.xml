@@ -13,12 +13,13 @@
     
     <resultMap id="resultWithTags" type="com.ljl.opweOpenService.entity.dtos.TagsWithGroupDto">
         <id property="tagName" column="tag_name" />
-        <collection property="tagValueList" javaType="java.util.List" ofType="java.lang.String">
-            <result column="tag_value" />
+        <collection property="tagValueList" ofType="com.ljl.opweOpenService.entity.dtos.TagValueWithIdDto">
+            <result property="tagId" column="tag_id"/>
+            <result property="tagValue" column="tag_value"/>
         </collection>
     </resultMap>
 
     <select id="queryUniqueTags" resultMap="resultWithTags">
-        SELECT tag_name, tag_value FROM main_tag group by tag_name, tag_value
+        SELECT tag_id, tag_name, tag_value FROM main_tag group by tag_name, tag_value, tag_id
     </select>
 </mapper>

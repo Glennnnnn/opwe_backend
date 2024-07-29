@@ -1,7 +1,9 @@
 package com.ljl.opweOpenService.service;
 
+import com.ljl.opweOpenService.entity.dtos.ProductWithImgDto;
 import com.ljl.opweOpenService.entity.pos.ProductPo;
 import com.ljl.opweOpenService.exceptions.GeneralException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,4 +23,6 @@ public interface ProductService {
     ProductPo queryProductStockAndOnHold(Long productId);
 
     int processProductPreOrder(Long productId, int amount) throws GeneralException;
+
+    void insertProductWithImg(ProductWithImgDto productWithTagsDto, List<MultipartFile> productImgs);
 }
