@@ -1,17 +1,25 @@
 package com.ljl.opweOpenService.service.impl;
 
 import com.ljl.opweOpenService.dao.ProductMapper;
+import com.ljl.opweOpenService.dao.StatusMapper;
 import com.ljl.opweOpenService.entity.constants.ProductExceptionConst;
 import com.ljl.opweOpenService.entity.dtos.ProductWithImgDto;
+import com.ljl.opweOpenService.entity.enums.StatusGroupEnum;
 import com.ljl.opweOpenService.entity.pos.ProductPo;
 import com.ljl.opweOpenService.exceptions.GeneralException;
 import com.ljl.opweOpenService.service.ProductService;
 import com.ljl.opweOpenService.utils.SnowflakeUtil;
+import io.minio.ObjectWriteResponse;
+import io.minio.errors.MinioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -24,16 +32,48 @@ import java.util.List;
  */
 @Service
 public class ProductServiceImpl implements ProductService {
-    @Autowired
-    ProductMapper productMapper;
+    private ProductMapper productMapper;
+
+    private SnowflakeUtil snowflakeUtil;
+
+    private MinioServiceImpl minioService;
+
+    private StatusMapper statusMapper;
 
     @Autowired
-    SnowflakeUtil snowflakeUtil;
+    public ProductServiceImpl(ProductMapper productMapper,SnowflakeUtil snowflakeUtil,MinioServiceImpl minioService, StatusMapper statusMapper){
+        this.productMapper = productMapper;
+        this.snowflakeUtil = snowflakeUtil;
+        this.minioService = minioService;
+        this.statusMapper = statusMapper;
+    }
 
     @Override
     public void insertSingleProduct(ProductPo productPo) {
         productPo.setProductId(snowflakeUtil.getNextId());
         productMapper.insertSingleProduct(productPo);
+    }
+
+    @Override
+    public void createNewProductWithImg(ProductWithImgDto productWithTagsDto, List<MultipartFile> productImgs) throws IOException, MinioException, NoSuchAlgorithmException, InvalidKeyException {
+        Long productId = snowflakeUtil.getNextId();
+        String bucketName = "product-imgs";
+        String fileName = "File" + productId.toString();
+        minioService.ensureBucketExists(bucketName);
+        ObjectWriteResponse objectWriteResponse = minioService.uploadFileSimple(bucketName, fileName, productImgs.get(0));
+        if(objectWriteResponse == null){
+            throw new RuntimeException("Upload file failed");
+        }
+        productMapper.insertSingleProduct(new ProductPo(
+                productId,
+                productWithTagsDto.getProductName(),
+                productWithTagsDto.getProductDesc(),
+                fileName,
+                statusMapper.queryStatusByGroupAndName(StatusGroupEnum.ProductGroupStatus.getStatusGroup(), "available"),
+                productWithTagsDto.getProductPrice(),
+                productWithTagsDto.getProductStock(),
+                0
+        ));
     }
 
     @Override

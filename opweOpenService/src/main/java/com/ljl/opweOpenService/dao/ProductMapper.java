@@ -1,6 +1,7 @@
 package com.ljl.opweOpenService.dao;
 
 import com.ljl.opweOpenService.entity.pos.ProductPo;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * @Description TODO
  * @Version 1.0.0
  */
-
+@Mapper
 public interface ProductMapper {
     int insertSingleProduct(ProductPo productPo);
 

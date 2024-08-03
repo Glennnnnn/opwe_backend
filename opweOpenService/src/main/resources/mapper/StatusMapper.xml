@@ -9,7 +9,11 @@
         <result property="statusGroup" column="status_group" />
     </resultMap>
 
-    <select id="queryStatusByGroup" resultMap="result">
+    <select id="queryStatusByGroup" resultMap="result" parameterType="java.lang.String">
         SELECT status_id, status_name FROM main_status WHERE status_group = #{statusGroup}
+    </select>
+
+    <select id="queryStatusByGroupAndName" resultType="java.lang.Long">
+        SELECT status_id, status_name FROM main_status WHERE status_group = #{statusGroup} AND status_name = #{statusName}
     </select>
 </mapper>

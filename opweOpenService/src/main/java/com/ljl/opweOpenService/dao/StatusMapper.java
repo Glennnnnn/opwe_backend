@@ -1,6 +1,8 @@
 package com.ljl.opweOpenService.dao;
 
 import com.ljl.opweOpenService.entity.pos.StatusPo;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -12,6 +14,8 @@ import java.util.List;
  * @Description TODO
  * @Version 1.0.0
  */
+@Mapper
 public interface StatusMapper {
     List<StatusPo> queryStatusByGroup(String statusGroup);
+    Long queryStatusByGroupAndName(@Param("statusGroup") String statusGroup, @Param("statusName") String statusName);
 }

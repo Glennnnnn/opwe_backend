@@ -72,6 +72,7 @@ public class ProductController {
         try{
             System.out.println(productWithTagsDto);
             System.out.println(productImgs);
+            productService.createNewProductWithImg(productWithTagsDto, productImgs);
             responseResultPo.setCode(HttpStatus.OK.value());
             responseResultPo.setMsg("SUCCESS");
 //            responseResultPo.setData(result);

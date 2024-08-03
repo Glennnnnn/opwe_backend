@@ -76,6 +76,6 @@ mybatis:
   type-aliases-package: com.ljl.opweOpenService.entity
 
 minio:
-  url: http://47.93.162.44
+  url: http://47.93.162.44:9000
   accessKey: gREgRD1Ds4PTqBA0hgzX
   secretKey: 8UVPVywcpzMvm7yyg1squjPiLUqolirn9QJ8Stiv
