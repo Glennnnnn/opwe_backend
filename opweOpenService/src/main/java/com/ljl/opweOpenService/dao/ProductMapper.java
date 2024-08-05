@@ -1,5 +1,6 @@
 package com.ljl.opweOpenService.dao;
 
+import com.ljl.opweOpenService.entity.dtos.ProductResponseDto;
 import com.ljl.opweOpenService.entity.pos.ProductPo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -25,4 +26,6 @@ public interface ProductMapper {
     int queryProductOnHold(Long productId);
 
     int updateProductOnHold(@Param("productId")Long productId, @Param("productOnHold")int productOnHold);
+
+    ProductResponseDto queryProductById(Long productId);
 }

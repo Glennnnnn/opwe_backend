@@ -1,11 +1,14 @@
 package com.ljl.opweOpenService.service.impl;
 
 import com.ljl.opweOpenService.dao.ProductMapper;
+import com.ljl.opweOpenService.dao.ProductTagMapper;
 import com.ljl.opweOpenService.dao.StatusMapper;
 import com.ljl.opweOpenService.entity.constants.ProductExceptionConst;
+import com.ljl.opweOpenService.entity.dtos.ProductResponseDto;
 import com.ljl.opweOpenService.entity.dtos.ProductWithImgDto;
 import com.ljl.opweOpenService.entity.enums.StatusGroupEnum;
 import com.ljl.opweOpenService.entity.pos.ProductPo;
+import com.ljl.opweOpenService.entity.pos.ProductTagPo;
 import com.ljl.opweOpenService.exceptions.GeneralException;
 import com.ljl.opweOpenService.service.ProductService;
 import com.ljl.opweOpenService.utils.SnowflakeUtil;
@@ -17,9 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -40,12 +45,19 @@ public class ProductServiceImpl implements ProductService {
 
     private StatusMapper statusMapper;
 
+    private ProductTagMapper productTagMapper;
+
     @Autowired
-    public ProductServiceImpl(ProductMapper productMapper,SnowflakeUtil snowflakeUtil,MinioServiceImpl minioService, StatusMapper statusMapper){
+    public ProductServiceImpl(ProductMapper productMapper,
+                              SnowflakeUtil snowflakeUtil,
+                              MinioServiceImpl minioService,
+                              StatusMapper statusMapper,
+                              ProductTagMapper productTagMapper){
         this.productMapper = productMapper;
         this.snowflakeUtil = snowflakeUtil;
         this.minioService = minioService;
         this.statusMapper = statusMapper;
+        this.productTagMapper = productTagMapper;
     }
 
     @Override
@@ -74,6 +86,14 @@ public class ProductServiceImpl implements ProductService {
                 productWithTagsDto.getProductStock(),
                 0
         ));
+        for(Long tagId: productWithTagsDto.getProductTags()){
+            productTagMapper.insertProductTag(new ProductTagPo(
+                    snowflakeUtil.getNextId(),
+                    productId,
+                    tagId
+            ));
+        }
+
     }
 
     @Override
@@ -100,7 +120,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void insertProductWithImg(ProductWithImgDto productWithTagsDto, List<MultipartFile> productImgs) {
+    public ProductResponseDto getProductWithImg(Long productId){
+        try{
+            ProductResponseDto productResponseDto = productMapper.queryProductById(productId);
+            InputStream inputStream = minioService.fetchFile("product-imgs", productResponseDto.getProductImageRoute());
+            byte[] content = inputStream.readAllBytes();
+            inputStream.close();
+            productResponseDto.setProductImage(Base64.getEncoder().encodeToString(content));
+            return productResponseDto;
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
 
     }
 }

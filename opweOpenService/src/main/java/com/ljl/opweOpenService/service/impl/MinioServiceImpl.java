@@ -84,4 +84,12 @@ public class MinioServiceImpl implements MinioService {
             System.out.println("Bucket already exists: " + bucketName);
         }
     }
+
+    public InputStream fetchFile(String bucketName, String fileName){
+        try{
+            return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(fileName).build());
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 }

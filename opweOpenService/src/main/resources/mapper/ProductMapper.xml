@@ -5,7 +5,7 @@
 
 <mapper namespace="com.ljl.opweOpenService.dao.ProductMapper">
     <resultMap id="result" type="com.ljl.opweOpenService.entity.pos.ProductPo">
-        <result property="productId" column="product_id" />
+        <id property="productId" column="product_id" />
         <result property="productName" column="product_name" />
         <result property="productDesc" column="product_desc"/>
         <result property="productImage" column="product_image" />
@@ -13,6 +13,24 @@
         <result property="productPrice" column="product_price" />
         <result property="productStock" column="product_stock" />
         <result property="productOnHold" column="product_on_hold" />
+    </resultMap>
+
+    <resultMap id="productResultWithTags" type="com.ljl.opweOpenService.entity.dtos.ProductResponseDto">
+        <id property="productId" column="product_id" />
+        <result property="productName" column="product_name" />
+        <result property="productDesc" column="product_desc"/>
+        <result property="productImageRoute" column="product_image" />
+        <result property="productStatus" column="status_name" />
+        <result property="productPrice" column="product_price" />
+        <result property="productStock" column="product_stock" />
+        <result property="productOnHold" column="product_on_hold" />
+        <collection property="productTags" ofType="com.ljl.opweOpenService.entity.pos.TagPo">
+            <id property="tagId" column="tag_id" />
+            <result property="tagName" column="tag_name" />
+            <result property="tagValue" column="tag_value" />
+            <result property="tagGroup" column="tag_group" />
+            <result property="tagDesc" column="tag_desc" />
+        </collection>
     </resultMap>
 
     <insert id="insertSingleProduct" parameterType="com.ljl.opweOpenService.entity.pos.ProductPo">
@@ -69,6 +87,27 @@
         WHERE
             product_id = #{productId}
     </update>
+
+    <select id="queryProductById" parameterType="java.lang.Long" resultMap="productResultWithTags">
+        SELECT
+            *
+        FROM
+            main_product mp
+        LEFT JOIN
+            main_status ms
+            ON
+                mp.product_status = ms.status_id
+        LEFT JOIN
+            main_product_tag mpt
+            ON
+                mp.product_id = mpt.product_id
+        LEFT JOIN
+            main_tag mt
+            ON
+                mpt.tag_id = mt.product_id
+        WHERE
+            product_id = #{productId}
+    </select>
 
 
 </mapper>

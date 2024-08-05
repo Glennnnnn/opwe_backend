@@ -23,4 +23,6 @@ public interface MinioService {
     ObjectWriteResponse uploadFileSimple(String bucketName, String objectName, MultipartFile multipartFile);
 
     void ensureBucketExists(String bucketName) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException;
+
+    InputStream fetchFile(String bucketName, String fileName);
 }
