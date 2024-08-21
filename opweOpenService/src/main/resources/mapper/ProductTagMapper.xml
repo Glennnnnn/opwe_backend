@@ -15,9 +15,9 @@
             product_id,
             tag_id
         ) VALUES (
-            #{product_tag_id},
-            #{product_id},
-            #{tag_id},
+            #{productTagId},
+            #{productId},
+            #{tagId}
         )
     </insert>
 </mapper>

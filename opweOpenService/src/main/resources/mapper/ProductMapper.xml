@@ -104,9 +104,9 @@
         LEFT JOIN
             main_tag mt
             ON
-                mpt.tag_id = mt.product_id
+                mpt.tag_id = mt.tag_id
         WHERE
-            product_id = #{productId}
+            mp.product_id = #{productId}
     </select>
 
 

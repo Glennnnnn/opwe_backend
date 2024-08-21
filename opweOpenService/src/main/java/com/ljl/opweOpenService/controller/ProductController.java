@@ -129,4 +129,19 @@ public class ProductController {
 
     }
 
+    @GetMapping("/singleProductWithImg")
+    public ResponseResultPo querySingleProductWithImg(@RequestParam Long productId){
+        ResponseResultPo responseResultPo = new ResponseResultPo<>();
+            try{
+                responseResultPo.setCode(HttpStatus.OK.value());
+                responseResultPo.setMsg(port);
+                responseResultPo.setData(productService.getProductWithImg(productId));
+            } catch (Exception e){
+                e.printStackTrace();
+                responseResultPo.setCode(HttpStatus.BAD_REQUEST.value());
+                responseResultPo.setMsg("unknown failed");
+            }
+        return responseResultPo;
+    }
+
 }
