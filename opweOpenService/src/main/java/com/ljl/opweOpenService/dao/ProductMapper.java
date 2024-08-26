@@ -17,15 +17,21 @@ import java.util.List;
  */
 @Mapper
 public interface ProductMapper {
-    int insertSingleProduct(ProductPo productPo);
+    Integer insertSingleProduct(ProductPo productPo);
 
     List<ProductPo> queryAllProduct();
 
     ProductPo queryProductStockAndOnHold(Long productId);
 
-    int queryProductOnHold(Long productId);
+    Integer queryProductOnHold(Long productId);
 
-    int updateProductOnHold(@Param("productId")Long productId, @Param("productOnHold")int productOnHold);
+    Integer updateProductOnHold(@Param("productId")Long productId, @Param("productOnHold")int productOnHold);
 
     ProductResponseDto queryProductById(Long productId);
+
+    List<Long> queryProductIdList(@Param("searchParams") String searchParams, @Param("pageSize") Integer pageSize, @Param("pageOffset") Integer pageOffset);
+
+    List<ProductResponseDto> queryProductList(@Param("productIdList") List<Long> productIdList);
+
+    Integer countProductWithSearchParam(String searchParams);
 }

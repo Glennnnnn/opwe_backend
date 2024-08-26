@@ -109,5 +109,54 @@
             mp.product_id = #{productId}
     </select>
 
+    <select id="queryProductList" parameterType="java.util.List" resultMap="productResultWithTags">
+        SELECT
+            *
+        FROM
+            main_product mp
+                LEFT JOIN
+            main_status ms
+            ON
+                mp.product_status = ms.status_id
+                LEFT JOIN
+            main_product_tag mpt
+            ON
+                mp.product_id = mpt.product_id
+                LEFT JOIN
+            main_tag mt
+            ON
+                mpt.tag_id = mt.tag_id
+        WHERE
+            mp.product_id IN
+            <foreach collection="productIdList" item="productId" open="(" separator="," close=")">
+                #{productId}
+            </foreach>
+    </select>
+
+    <select id="queryProductIdList" parameterType="java.lang.String" resultType="java.lang.Long">
+        SELECT
+            *
+        FROM
+            main_product mp
+        WHERE
+            1 = 1
+        <if test="searchParams != null">
+            AND mp.product_name LIKE CONCAT('%', #{searchParams}, '%')
+        </if>
+        LIMIT #{pageSize} OFFSET #{pageOffset}
+    </select>
+
+    <select id="countProductWithSearchParam" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            main_product
+        WHERE
+            1=1
+        <if test="searchParams != null">
+            AND mp.product_name LIKE CONCAT('%', #{searchParams}, '%')
+        </if>
+    </select>
+
 
 </mapper>

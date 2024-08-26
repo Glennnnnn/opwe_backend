@@ -92,4 +92,19 @@ public class MinioServiceImpl implements MinioService {
             throw new RuntimeException(e);
         }
     }
+
+    public String generatePresignedUrl(String bucketName, String objectKey, int expiryTimeInSeconds) {
+        try {
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                            .method(Method.GET)
+                            .bucket(bucketName)
+                            .object(objectKey)
+                            .expiry(expiryTimeInSeconds)
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate presigned URL", e);
+        }
+    }
 }

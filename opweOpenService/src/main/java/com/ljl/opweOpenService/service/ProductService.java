@@ -1,6 +1,7 @@
 package com.ljl.opweOpenService.service;
 
 import com.ljl.opweOpenService.entity.dtos.ProductResponseDto;
+import com.ljl.opweOpenService.entity.dtos.ProductResultListDto;
 import com.ljl.opweOpenService.entity.dtos.ProductWithImgDto;
 import com.ljl.opweOpenService.entity.pos.ProductPo;
 import com.ljl.opweOpenService.exceptions.GeneralException;
@@ -32,4 +33,6 @@ public interface ProductService {
     int processProductPreOrder(Long productId, int amount) throws GeneralException;
 
     ProductResponseDto getProductWithImg(Long productId);
+
+    ProductResultListDto getProductListWithParams(String searchParams, Integer pageSize, Integer pageOffset);
 }

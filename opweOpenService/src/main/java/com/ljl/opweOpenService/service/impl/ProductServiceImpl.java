@@ -1,10 +1,13 @@
 package com.ljl.opweOpenService.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.ljl.opweOpenService.dao.ProductMapper;
 import com.ljl.opweOpenService.dao.ProductTagMapper;
 import com.ljl.opweOpenService.dao.StatusMapper;
 import com.ljl.opweOpenService.entity.constants.ProductExceptionConst;
 import com.ljl.opweOpenService.entity.dtos.ProductResponseDto;
+import com.ljl.opweOpenService.entity.dtos.ProductResultListDto;
 import com.ljl.opweOpenService.entity.dtos.ProductWithImgDto;
 import com.ljl.opweOpenService.entity.enums.StatusGroupEnum;
 import com.ljl.opweOpenService.entity.pos.ProductPo;
@@ -123,14 +126,28 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto getProductWithImg(Long productId){
         try{
             ProductResponseDto productResponseDto = productMapper.queryProductById(productId);
-            InputStream inputStream = minioService.fetchFile("product-imgs", productResponseDto.getProductImageRoute());
-            byte[] content = inputStream.readAllBytes();
-            inputStream.close();
-            productResponseDto.setProductImage(Base64.getEncoder().encodeToString(content));
+            String imageUrl = minioService.generatePresignedUrl("product-imgs", productResponseDto.getProductImageRoute(), 10);
+//            InputStream inputStream = minioService.fetchFile("product-imgs", productResponseDto.getProductImageRoute());
+//            byte[] content = inputStream.readAllBytes();
+//            inputStream.close();
+//            productResponseDto.setProductImage(Base64.getEncoder().encodeToString(content));
+            productResponseDto.setProductImage(imageUrl);
             return productResponseDto;
         }catch (Exception e){
             throw new RuntimeException(e);
         }
+    }
 
+    public ProductResultListDto getProductListWithParams(String searchParams, Integer pageSize, Integer pageOffset){
+        List<Long> productIdList = productMapper.queryProductIdList(searchParams, pageSize, pageOffset);
+        if(productIdList.size() == 0){
+            return new ProductResultListDto(null, 0);
+        }
+        List<ProductResponseDto> basicResult = productMapper.queryProductList(productIdList);
+        for(ProductResponseDto productResponseDto : basicResult){
+            productResponseDto.setProductImage(minioService.generatePresignedUrl("product-imgs", productResponseDto.getProductImageRoute(), 10));
+        }
+        Integer count = productMapper.countProductWithSearchParam(searchParams);
+        return new ProductResultListDto(basicResult, count);
     }
 }
