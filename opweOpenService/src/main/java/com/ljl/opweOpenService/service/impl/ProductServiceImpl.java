@@ -87,7 +87,8 @@ public class ProductServiceImpl implements ProductService {
                 statusMapper.queryStatusByGroupAndName(StatusGroupEnum.ProductGroupStatus.getStatusGroup(), "available"),
                 productWithTagsDto.getProductPrice(),
                 productWithTagsDto.getProductStock(),
-                0
+                0,
+                null
         ));
         for(Long tagId: productWithTagsDto.getProductTags()){
             productTagMapper.insertProductTag(new ProductTagPo(
@@ -145,7 +146,7 @@ public class ProductServiceImpl implements ProductService {
         }
         List<ProductResponseDto> basicResult = productMapper.queryProductList(productIdList);
         for(ProductResponseDto productResponseDto : basicResult){
-            productResponseDto.setProductImage(minioService.generatePresignedUrl("product-imgs", productResponseDto.getProductImageRoute(), 10));
+            productResponseDto.setProductImage(productResponseDto.getProductImageRoute() != null ? minioService.generatePresignedUrl("product-imgs", productResponseDto.getProductImageRoute(), 180) : null);
         }
         Integer count = productMapper.countProductWithSearchParam(searchParams);
         return new ProductResultListDto(basicResult, count);

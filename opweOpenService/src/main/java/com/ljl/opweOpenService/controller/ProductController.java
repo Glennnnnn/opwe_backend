@@ -145,12 +145,12 @@ public class ProductController {
     }
 
     @GetMapping("/productListWithParams")
-    public ResponseResultPo getProductListWithParams(@RequestParam(required = false) String searchParams, @RequestParam Integer pageSize, @RequestParam Integer pageOffset){
+    public ResponseResultPo getProductListWithParams(@RequestParam(required = false) String searchParams, @RequestParam Integer pageSize, @RequestParam Integer currentPageIndex){
         ResponseResultPo responseResultPo = new ResponseResultPo<>();
         try{
             responseResultPo.setCode(HttpStatus.OK.value());
             responseResultPo.setMsg(port);
-            responseResultPo.setData(productService.getProductListWithParams(searchParams, pageSize, pageOffset));
+            responseResultPo.setData(productService.getProductListWithParams(searchParams, pageSize, (currentPageIndex-1) * pageSize));
         } catch (Exception e){
             e.printStackTrace();
             responseResultPo.setCode(HttpStatus.BAD_REQUEST.value());

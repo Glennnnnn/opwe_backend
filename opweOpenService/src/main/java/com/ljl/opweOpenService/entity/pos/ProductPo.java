@@ -26,4 +26,5 @@ public class ProductPo implements Serializable {
     private Float productPrice;
     private Integer productStock;
     private Integer productOnHold;
+    private Long productCategoryId;
 }

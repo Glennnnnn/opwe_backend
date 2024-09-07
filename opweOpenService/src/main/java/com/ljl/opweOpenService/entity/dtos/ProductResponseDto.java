@@ -28,5 +28,6 @@ public class ProductResponseDto {
     private String productPrice;
     private Integer productStock;
     private String productOnHold;
+    private String productCategoryName;
     private List<TagPo> productTags;
 }
