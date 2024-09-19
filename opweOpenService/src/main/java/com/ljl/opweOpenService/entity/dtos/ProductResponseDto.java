@@ -1,5 +1,7 @@
 package com.ljl.opweOpenService.entity.dtos;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.ljl.opweOpenService.entity.pos.TagPo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductResponseDto {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long productId;
     private String productName;
     private String productDesc;

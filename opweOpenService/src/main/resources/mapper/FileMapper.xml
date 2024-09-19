@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ljl.opweOpenService.dao.FileMapper">
+    <resultMap id="result" type="com.ljl.opweOpenService.entity.pos.FilePo">
+        <result property="fileId" column="file_id" />
+        <result property="fileName" column="file_name" />
+        <result property="fileDesc" column="file_desc"/>
+        <result property="fileCategory" column="file_category" />
+        <result property="fileLocation" column="file_location" />
+        <result property="fileCreateTime" column="file_create_time"/>
+        <result property="fileUpdateTime" column="file_update_time" />
+        <result property="fileCreateBy" column="file_create_by" />
+        <result property="fileUpdateBy" column="file_update_by"/>
+        <result property="fileLevel" column="file_level"/>
+        <result property="fileOwner" column="file_owner"/>
+    </resultMap>
+
+    <select id="insertNewFile" parameterType="com.ljl.opweOpenService.entity.pos.FilePo">
+        INSERT INTO main_file(
+            file_id,
+            file_name,
+            file_desc,
+            file_category,
+            file_location,
+            file_create_time,
+            file_update_time,
+            file_create_by,
+            file_update_by,
+            file_level,
+            file_owner
+        ) VALUES (
+            #{fileId},
+            #{fileName},
+            #{fileDesc},
+            #{fileCategory},
+            #{fileLocation},
+            #{fileCreateTime},
+            #{fileUpdateTime},
+            #{fileCreateBy},
+            #{fileUpdateBy},
+            #{fileLevel},
+            #{fileOwner}
+        )
+    </select>
+
+</mapper>

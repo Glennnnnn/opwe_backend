@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * @Author Liu Jialin
@@ -25,4 +26,10 @@ public interface MinioService {
     void ensureBucketExists(String bucketName) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException;
 
     InputStream fetchFile(String bucketName, String fileName);
+
+    List<String> fuzzyListObjects(String bucketName, String objectName);
+
+    String composeObject(List<String> list, String originalFilename,String bucketName);
+
+    void deleteObjects(List<String> objects, String bucketName);
 }

@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto getProductWithImg(Long productId){
         try{
             ProductResponseDto productResponseDto = productMapper.queryProductById(productId);
-            String imageUrl = minioService.generatePresignedUrl("product-imgs", productResponseDto.getProductImageRoute(), 10);
+            String imageUrl = minioService.generatePresignedUrl("product-imgs", productResponseDto.getProductImageRoute(), 30);
 //            InputStream inputStream = minioService.fetchFile("product-imgs", productResponseDto.getProductImageRoute());
 //            byte[] content = inputStream.readAllBytes();
 //            inputStream.close();
