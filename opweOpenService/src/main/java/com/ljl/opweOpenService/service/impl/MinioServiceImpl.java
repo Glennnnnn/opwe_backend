@@ -2,7 +2,7 @@ package com.ljl.opweOpenService.service.impl;
 
 import com.ljl.opweOpenService.service.MinioService;
 import io.minio.*;
-import io.minio.errors.MinioException;
+import io.minio.errors.*;
 import io.minio.http.Method;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
@@ -43,7 +42,7 @@ public class MinioServiceImpl implements MinioService {
     @Override
     public String uploadFile(String bucketName, String objectName, InputStream inputStream, long size, String contentType) {
         try {
-             minioClient.putObject(PutObjectArgs.builder()
+            minioClient.putObject(PutObjectArgs.builder()
                     .bucket(bucketName)
                     .object(objectName)
                     .stream(inputStream, size, -1)
@@ -75,6 +74,7 @@ public class MinioServiceImpl implements MinioService {
         }
     }
 
+    @Override
     public void ensureBucketExists(String bucketName) throws MinioException, IOException, NoSuchAlgorithmException, InvalidKeyException {
         // Check if the bucket exists
         boolean bucketExists = minioClient.bucketExists(
@@ -92,14 +92,16 @@ public class MinioServiceImpl implements MinioService {
         }
     }
 
-    public InputStream fetchFile(String bucketName, String fileName){
-        try{
+    @Override
+    public InputStream fetchFile(String bucketName, String fileName) {
+        try {
             return minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(fileName).build());
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
     public String generatePresignedUrl(String bucketName, String objectKey, int expiryTimeInSeconds) {
         try {
             return minioClient.getPresignedObjectUrl(
@@ -116,10 +118,12 @@ public class MinioServiceImpl implements MinioService {
     }
 
     /**
-     * 递归根据文件名称前缀模糊查询
+     * fetch file by prefix
+     *
      * @param objectName
      * @return
      */
+    @Override
     public List<String> fuzzyListObjects(String bucketName, String objectName) {
         try {
             Iterable<Result<Item>> results = minioClient.listObjects(
@@ -152,20 +156,22 @@ public class MinioServiceImpl implements MinioService {
     }
 
     /**
-     * 同步合并文件
+     * compose file
+     *
      * @param list
-     * @param originalFilename 合并后文件名称
-     * @param pathPrefix 文件所在路径
+     * @param originBucket
+     * @param originalFileName
      * @return
      */
-    public String composeObject(List<String> list, String originalFilename,String bucketName) {
+    @Override
+    public String composeObject(List<String> list, String originalFileName, String originBucket, String targetBucket) {
         String objectName = null;
         List<ComposeSource> composeSourceList = list.stream().map(s -> {
-            ComposeSource source = ComposeSource.builder().bucket(bucketName).object(s).build();
+            ComposeSource source = ComposeSource.builder().bucket(originBucket).object(s).build();
             return source;
         }).collect(Collectors.toList());
         try {
-            //需要按名称排序合并 xx.part0,xx.part1...
+            //sort by name eg: xx.part0,xx.part1...
             Collections.sort(composeSourceList, new Comparator<>() {
                 @Override
                 public int compare(ComposeSource o1, ComposeSource o2) {
@@ -175,25 +181,43 @@ public class MinioServiceImpl implements MinioService {
                     return 1;
                 }
             });
-            String fileName = originalFilename;
-            objectName = fileName;
+            objectName = originalFileName;
 //            objectName = pathPrefix.concat("/").concat(fileName);
-            minioClient.composeObject(ComposeObjectArgs.builder().bucket(bucketName).object(objectName).sources(composeSourceList).build());
+            minioClient.composeObject(ComposeObjectArgs.builder().bucket(targetBucket).object(objectName).sources(composeSourceList).build());
         } catch (Exception e) {
             log.error("####### composeObject error", e);
             return null;
         }
-        return objectName;
+        return originalFileName;
 //        return objectName;
     }
 
-    public void deleteObjects(List<String> objects, String bucketName){
+    @Override
+    public void deleteObjects(List<String> objects, String bucketName) {
         List<DeleteObject> collect = objects.stream().map(str -> new DeleteObject(str)).collect(Collectors.toList());
         Iterable<Result<DeleteError>> results = minioClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(collect).build());
         Iterator<Result<DeleteError>> iterator = results.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Result<DeleteError> next = iterator.next();
             System.out.println(next);
+        }
+    }
+
+    @Override
+    public boolean isFileExists(String bucketName, String objectName) {
+        try {
+            minioClient.statObject(
+                    io.minio.StatObjectArgs.builder().bucket(bucketName).object(objectName).build()
+            );
+            return true; // File exists
+        } catch (ErrorResponseException | InsufficientDataException |
+                InternalException | InvalidResponseException |
+                IOException | NoSuchAlgorithmException |
+                ServerException e) {
+            // File does not exist or other error occurred
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException("Error checking file existence", e);
         }
     }
 }

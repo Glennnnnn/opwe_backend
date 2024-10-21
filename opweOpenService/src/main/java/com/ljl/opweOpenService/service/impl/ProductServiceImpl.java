@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
     public void createNewProductWithImg(ProductWithImgDto productWithTagsDto, List<MultipartFile> productImgs) throws IOException, MinioException, NoSuchAlgorithmException, InvalidKeyException {
         Long productId = snowflakeUtil.getNextId();
         String bucketName = "product-imgs";
-        String fileName = "File" + productId.toString();
+        String fileName = "File" + productId;
         minioService.ensureBucketExists(bucketName);
         ObjectWriteResponse objectWriteResponse = minioService.uploadFileSimple(bucketName, fileName, productImgs.get(0));
         if(objectWriteResponse == null){
