@@ -1,5 +1,7 @@
 package com.ljl.opweOpenService.dao;
 
+import com.ljl.opweOpenService.entity.dtos.FileDto;
+import com.ljl.opweOpenService.entity.pos.FilePo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -12,4 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface FileMapper {
+    void insertNewFile(FilePo filePo);
+
+    FilePo queryFileById(Long fileId);
 }

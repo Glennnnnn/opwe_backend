@@ -29,7 +29,12 @@ public interface MinioService {
 
     List<String> fuzzyListObjects(String bucketName, String objectName);
 
-    String composeObject(List<String> list, String originalFilename,String bucketName);
+    String composeObject(List<String> list, String originalFileName, String originBucket, String targetBucket);
 
     void deleteObjects(List<String> objects, String bucketName);
+
+    String generatePresignedUrl(String bucketName, String objectKey, int expiryTimeInSeconds);
+
+    boolean isFileExists(String bucketName, String objectName);
+
 }

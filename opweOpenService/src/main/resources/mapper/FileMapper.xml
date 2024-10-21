@@ -16,6 +16,7 @@
         <result property="fileUpdateBy" column="file_update_by"/>
         <result property="fileLevel" column="file_level"/>
         <result property="fileOwner" column="file_owner"/>
+        <result property="fileBucket" column="file_bucket"/>
     </resultMap>
 
     <select id="insertNewFile" parameterType="com.ljl.opweOpenService.entity.pos.FilePo">
@@ -30,7 +31,8 @@
             file_create_by,
             file_update_by,
             file_level,
-            file_owner
+            file_owner,
+            file_bucket
         ) VALUES (
             #{fileId},
             #{fileName},
@@ -42,8 +44,13 @@
             #{fileCreateBy},
             #{fileUpdateBy},
             #{fileLevel},
-            #{fileOwner}
+            #{fileOwner},
+            #{fileBucket}
         )
+    </select>
+
+    <select id="queryFileById" parameterType="java.lang.Long" resultMap="result">
+        SELECT * FROM main_file WHERE file_id = #{fileId}
     </select>
 
 </mapper>
