@@ -18,7 +18,7 @@ import java.util.List;
 public class UserPo implements Serializable {
     private Long userId;
 
-    private String username;
+    private String userName;
 
     private String userPassword;
 
@@ -26,11 +26,17 @@ public class UserPo implements Serializable {
 
     private String userPhone;
 
+    private String userRoleName;
+
     private Integer userStatus;
 
     private Date createTime;
 
     private Date updateTime;
+
+    private long createBy;
+
+    private long updateBy;
 
     private static final long serialVersionUID = 1L;
 }

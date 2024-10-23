@@ -94,7 +94,8 @@ public class JwtUtil {
      */
     public SecretKey generalKey() {
         byte[] encodedKey = Base64.getDecoder().decode(JWT_SECRET);
-        return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
+        return new SecretKeySpec(encodedKey, 0, encodedKey.length, "HmacSHA256");
+//        return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
     }
 
     /**

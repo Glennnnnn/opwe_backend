@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
  * @Author Liu Jialin
  * @Date 2023/9/1 20:46
- * @PackageName com.ljl.inventory.utils
+ * @PackageName com.ljl.opweAuthService.utils
  * @ClassName JwtUtil
  * @Description JwtUtils
  * @Version 1.0.0
@@ -24,7 +24,7 @@ public class JwtUtils {
     //有效期为
     public static final Long JWT_TTL = 8 * 60 * 60 *1000L;// 60 * 60 *1000  一个小时
     //设置秘钥明文, 注意长度必须大于等于6位
-    public static final String JWT_KEY = "superglenn";
+    public static final String JWT_KEY = "thisIsTheJwtSecretKeyForOneProjectWithEverythingAuthModule";
 
     public static String getUUID(){
         String token = UUID.randomUUID().toString().replaceAll("-", "");
@@ -89,7 +89,7 @@ public class JwtUtils {
      */
     public static SecretKey generalKey() {
         byte[] encodedKey = Base64.getDecoder().decode(JwtUtils.JWT_KEY);
-        SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
+        SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "HmacSHA256");
         return key;
     }
 

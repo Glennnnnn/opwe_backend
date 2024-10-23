@@ -1,4 +1,4 @@
-package com.ljl.opweSettlementService.feignClients;
+package com.ljl.opweSettlementService.service.feignClients;
 
 import com.ljl.opweSettlementService.entity.common.ResponseResultPo;
 import com.ljl.opweSettlementService.entity.pos.ProductPo;

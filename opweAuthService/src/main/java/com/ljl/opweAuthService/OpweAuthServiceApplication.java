@@ -13,8 +13,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @Description TODO
  * @Version 1.0.0
  */
-@MapperScan("com.ljl.opweAuthService.dao")
 @SpringBootApplication
+@MapperScan("com.ljl.opweAuthService.dao")
 @EnableFeignClients
 public class OpweAuthServiceApplication {
     public static void main(String[] args) {

@@ -19,11 +19,13 @@
         <fastjson.version>2.0.39</fastjson.version>
         <slf4j.version>2.0.7</slf4j.version>
         <slf4j-log4j12.version>2.0.7</slf4j-log4j12.version>
-        <mysql.version>8.0.28</mysql.version>
+<!--        <mysql.version>8.0.28</mysql.version>-->
         <mybatis.version>3.0.2</mybatis.version>
         <oauth2.version>2.2.5.RELEASE</oauth2.version>
 <!--        <spring-cloud-security>2.2.5.RELEASE</spring-cloud-security>-->
-        <jwt.version>0.9.1</jwt.version>
+        <pgsql.version>42.5.0</pgsql.version>
+        <jwt.version>0.11.5</jwt.version>
+        <pagehelper.version>5.3.2</pagehelper.version>
     </properties>
 
     <dependencies>
@@ -31,11 +33,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
+<!--        </dependency>-->
         <!--lombok-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -64,21 +70,21 @@
             <version>${mybatis.version}</version>
         </dependency>
         <!--mysql连接池-->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>mysql</groupId>-->
+<!--            <artifactId>mysql-connector-java</artifactId>-->
+<!--            <version>${mysql.version}</version>-->
+<!--        </dependency>-->
         <!-- security dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-authorization-server</artifactId>
-<!--            <version>1.0.2</version>-->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.security</groupId>-->
+<!--            <artifactId>spring-security-oauth2-authorization-server</artifactId>-->
+<!--&lt;!&ndash;            <version>1.0.2</version>&ndash;&gt;-->
+<!--        </dependency>-->
         <!--json解析-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -128,8 +134,18 @@
         <!--jwt-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
+            <artifactId>jjwt-api</artifactId>
             <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jwt.version}</version> <!-- For JSON handling with Jackson -->
         </dependency>
 <!--        for login page and consent page which is not essential-->
 <!--        <dependency>-->
@@ -145,5 +161,15 @@
 <!--            <artifactId>bootstrap</artifactId>-->
 <!--            <version>5.2.3</version>-->
 <!--        </dependency>-->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>${pagehelper.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${pgsql.version}</version>
+        </dependency>
     </dependencies>
 </project>

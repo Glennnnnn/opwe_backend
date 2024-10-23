@@ -1,21 +1,24 @@
 package com.ljl.opweGatewayService.filter;
 
 import com.ljl.opweGatewayService.handler.JwtReactiveAuthenticationManager;
+import com.ljl.opweGatewayService.service.feignClients.AuthServiceClient;
 import com.ljl.opweGatewayService.utils.JwtUtil;
-import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.WebFilterChainServerAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @Author Liu Jialin
@@ -27,18 +30,23 @@ import reactor.core.publisher.Mono;
  */
 @Component
 public class JwtAuthenticationFilter extends AuthenticationWebFilter {
-    private final JwtUtil jwtUtil;
-    private final ReactiveUserDetailsService userDetailsService;
+    private JwtUtil jwtUtil;
+    private ReactiveUserDetailsService userDetailsService;
+    private AuthServiceClient authServiceClient;
 
 //    @Autowired
 //    public JwtAuthenticationFilter(JwtUtil jwtUtil){
 //        this.jwtUtil = jwtUtil;
 //    }
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, ReactiveUserDetailsService userDetailsService) {
+
+
+    @Autowired
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, ReactiveUserDetailsService userDetailsService, AuthServiceClient authServiceClient) {
         super(new JwtReactiveAuthenticationManager(jwtUtil, userDetailsService));  // Custom manager to handle JWT
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
-        setAuthenticationSuccessHandler(new WebFilterChainServerAuthenticationSuccessHandler());
+        this.authServiceClient = authServiceClient;
+//        setAuthenticationSuccessHandler(new WebFilterChainServerAuthenticationSuccessHandler());
     }
 
     @Override
@@ -51,19 +59,37 @@ public class JwtAuthenticationFilter extends AuthenticationWebFilter {
 
             return jwtUtil.validateToken(token).flatMap(isValid -> {
                 if (isValid) {
-                    // Extract the username and load user details
+                    // Extract username from the token
                     String username = jwtUtil.extractUsername(token);
-                    return userDetailsService.findByUsername(username).flatMap(userDetails -> {
-                        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        return chain.filter(exchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
-                    });
+
+                    // Load user details
+                    return authServiceClient.loadUserByUsername(username)
+                            .flatMap(response -> {
+                                // Check if the response is valid
+                                if (response.getCode() == 200 && response.getData() != null) {
+                                    UserDetails userDetails = response.getData();
+                                    // Check for required authority (replace "REQUIRED_AUTHORITY" with actual authority)
+                                    Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                                    return chain.filter(exchange)
+                                            .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth));
+                                } else {
+                                    return chain.filter(exchange); // Proceed without authentication if user not found
+                                }
+                            });
                 } else {
-                    return chain.filter(exchange);  // Continue without authentication if token is invalid
+                    return onFailure(exchange, "Invalid token."); // Token is invalid, proceed without authentication
                 }
             });
         }
+        exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+        return Mono.empty();
+    }
 
-        // If no Authorization header or invalid format, proceed without authentication
-        return chain.filter(exchange);
+    // Method to handle failures
+    private Mono<Void> onFailure(ServerWebExchange exchange, String message) {
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
+        return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
     }
 }

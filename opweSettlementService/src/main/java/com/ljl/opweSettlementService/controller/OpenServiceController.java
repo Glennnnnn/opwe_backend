@@ -1,7 +1,7 @@
 package com.ljl.opweSettlementService.controller;
 
 import com.ljl.opweSettlementService.entity.common.ResponseResultPo;
-import com.ljl.opweSettlementService.feignClients.OpenServiceClient;
+import com.ljl.opweSettlementService.service.feignClients.OpenServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

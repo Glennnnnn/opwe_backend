@@ -5,10 +5,10 @@ spring:
   application:
     name: opwe-auth-service
   datasource:
-    username: develope01 #developer01 #admin
-    password: Dev123456!
-    url: jdbc:mysql://101.200.41.70/opwe_auth?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: postgres #developer01 #admin
+    password: dev123456!
+    url: jdbc:postgresql://101.200.41.70/opwe_auth?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    driver-class-name: org.postgresql.Driver
     hikari:
       #minimum idle time ,default 10，less than 0 or greater than maximum-pool-size will be reset to maximum-pool-siz
       minimum-idle: 5
@@ -29,10 +29,10 @@ spring:
           max-wait: 1000
           max-active: 8
       timeout: 60s
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 101.200.41.70:8848
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: 101.200.41.70:8848
 #      config:
 #        file-extension: yaml
 #        prefix: ${spring.application.name}
@@ -42,10 +42,10 @@ spring:
 #        # 配置组  默认 DEFAULT_GROUP
 #        group: opwe
 
-#eureka:
-#  client:
-#    service-url:
-#      default-zone: http://127.0.0.1:8761/eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://47.93.162.44:8761/eureka/
 #  instance:
 #    instance-id: opweOpenService01
 #    prefer-ip-address: true

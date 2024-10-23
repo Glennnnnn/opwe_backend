@@ -30,10 +30,10 @@ spring:
 #          max-wait: 1000
 #          max-active: 8
 #      timeout: 60s
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 101.200.41.70:8848
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: 101.200.41.70:8848
 #      config:
 #        file-extension: yaml
 #        prefix: ${spring.application.name}

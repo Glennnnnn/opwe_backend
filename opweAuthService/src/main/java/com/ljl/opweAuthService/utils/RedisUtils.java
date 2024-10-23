@@ -1,12 +1,8 @@
 package com.ljl.opweAuthService.utils;
 
-import jakarta.annotation.Resource;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -19,304 +15,217 @@ import java.util.concurrent.TimeUnit;
  * @Description TODO
  * @Version 1.0.0
  */
+@SuppressWarnings(value = { "unchecked", "rawtypes" })
 @Component
-public class RedisUtils<V> {
-    @Resource
-    private RedisTemplate<String, V> redisTemplate;
-
-    @Resource
-    private RedisTemplate<String, Object> redisHashTemplate;
+public class RedisUtils {
+    @Autowired
+    public RedisTemplate redisTemplate;
 
     /**
-     * 设置key的过期时间
+     * 缓存基本的对象，Integer、String、实体类等
      *
-     * @param key     缓存key
-     * @param timeout 存活时间
-     * @param unit    时间单位
+     * @param key 缓存的键值
+     * @param value 缓存的值
      */
-    public void setExpire(String key, long timeout, TimeUnit unit) {
-        redisHashTemplate.expire(key, timeout, unit);
+    public <T> void setCacheObject(final String key, final T value)
+    {
+        redisTemplate.opsForValue().set(key, value);
     }
 
     /**
-     * 根据key删除缓存
+     * 缓存基本的对象，Integer、String、实体类等
      *
-     * @param keys 要删除的key，可变参数列表
-     * @return 删除的缓存数量
+     * @param key 缓存的键值
+     * @param value 缓存的值
+     * @param timeout 时间
+     * @param timeUnit 时间颗粒度
      */
-    public Long delete(String... keys) {
-        if (ObjectUtils.isEmpty(keys)) {
-            return 0L;
+    public <T> void setCacheObject(final String key, final T value, final Integer timeout, final TimeUnit timeUnit)
+    {
+        redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
+    }
+
+    /**
+     * 设置有效时间
+     *
+     * @param key Redis键
+     * @param timeout 超时时间
+     * @return true=设置成功；false=设置失败
+     */
+    public boolean expire(final String key, final long timeout) {
+        return expire(key, timeout, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 设置有效时间
+     *
+     * @param key Redis键
+     * @param timeout 超时时间
+     * @param unit 时间单位
+     * @return true=设置成功；false=设置失败
+     */
+    public boolean expire(final String key, final long timeout, final TimeUnit unit) {
+        return redisTemplate.expire(key, timeout, unit);
+    }
+
+    /**
+     * 获得缓存的基本对象。
+     *
+     * @param key 缓存键值
+     * @return 缓存键值对应的数据
+     */
+    public <T> T getCacheObject(final String key) {
+        ValueOperations<String, T> operation = redisTemplate.opsForValue();
+        return operation.get(key);
+    }
+
+    /**
+     * 删除单个对象
+     *
+     * @param key
+     */
+    public boolean deleteObject(final String key)
+    {
+        return redisTemplate.delete(key);
+    }
+
+    /**
+     * 删除集合对象
+     *
+     * @param collection 多个对象
+     * @return
+     */
+    public long deleteObject(final Collection collection) {
+        return redisTemplate.delete(collection);
+    }
+
+    /**
+     * 缓存List数据
+     *
+     * @param key 缓存的键值
+     * @param dataList 待缓存的List数据
+     * @return 缓存的对象
+     */
+    public <T> long setCacheList(final String key, final List<T> dataList) {
+        Long count = redisTemplate.opsForList().rightPushAll(key, dataList);
+        return count == null ? 0 : count;
+    }
+
+    /**
+     * 获得缓存的list对象
+     *
+     * @param key 缓存的键值
+     * @return 缓存键值对应的数据
+     */
+    public <T> List<T> getCacheList(final String key)
+    {
+        return redisTemplate.opsForList().range(key, 0, -1);
+    }
+
+    /**
+     * 缓存Set
+     *
+     * @param key 缓存键值
+     * @param dataSet 缓存的数据
+     * @return 缓存数据的对象
+     */
+    public <T> BoundSetOperations<String, T> setCacheSet(final String key, final Set<T> dataSet) {
+        BoundSetOperations<String, T> setOperation = redisTemplate.boundSetOps(key);
+        Iterator<T> it = dataSet.iterator();
+        while (it.hasNext())
+        {
+            setOperation.add(it.next());
         }
-        return redisTemplate.delete(Arrays.asList(keys));
+        return setOperation;
     }
 
     /**
-     * 存入值
+     * 获得缓存的set
      *
-     * @param key   缓存中的key
-     * @param value 存入的value
+     * @param key
+     * @return
      */
-    public void set(String key, V value) {
-        valueOperations().set(key, value);
+    public <T> Set<T> getCacheSet(final String key)
+    {
+        return redisTemplate.opsForSet().members(key);
     }
 
     /**
-     * 根据key取值
+     * 缓存Map
      *
-     * @param key 缓存中的key
-     * @return 返回键值对应缓存
+     * @param key
+     * @param dataMap
      */
-    public V get(String key) {
-        return valueOperations().get(key);
-    }
-
-    /**
-     * 设置键值并设置过期时间
-     *
-     * @param key     键
-     * @param value   值
-     * @param timeout 过期时间
-     * @param unit    过期时间的单位
-     */
-    public void set(String key, V value, long timeout, TimeUnit unit) {
-        valueOperations().set(key, value, timeout, unit);
-    }
-
-    /**
-     * 设置键值并设置过期时间（单位秒）
-     *
-     * @param key     键
-     * @param value   值
-     * @param timeout 过期时间,单位：秒
-     */
-    public void set(String key, V value, long timeout) {
-        this.set(key, value, timeout, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 根据key获取缓存并删除缓存
-     *
-     * @param key 要获取缓存的key
-     * @return key对应的缓存
-     */
-    public V getAndDelete(String key) {
-        if (ObjectUtils.isEmpty(key)) {
-            return null;
+    public <T> void setCacheMap(final String key, final Map<String, T> dataMap) {
+        if (dataMap != null) {
+            redisTemplate.opsForHash().putAll(key, dataMap);
         }
-        V value = valueOperations().get(key);
-        this.delete(key);
-        return value;
     }
 
     /**
-     * 往hash类型的数据中存值
+     * 获得缓存的Map
      *
-     * @param key   缓存中的key
-     * @param field hash结构的key
-     * @param value 存入的value
+     * @param key
+     * @return
      */
-    public void setHash(String key, String field, V value) {
-        hashOperations().put(key, field, value);
+    public <T> Map<String, T> getCacheMap(final String key)
+    {
+        return redisTemplate.opsForHash().entries(key);
     }
 
     /**
-     * 根据key取值
+     * 往Hash中存入数据
      *
-     * @param key 缓存中的key
-     * @return 缓存key对应的hash数据中field属性的值
-     */
-    public Object getHash(String key, String field) {
-        return hashOperations().hasKey(key, field) ? hashOperations().get(key, field) : null;
-    }
-
-    /**
-     * 以hash格式存入redis
-     *
-     * @param key   缓存中的key
-     * @param value 存入的对象
-     */
-    public void setHashAll(String key, Object value) {
-        Map<String, Object> map = JsonUtils.objectCovertToObject(value, Map.class, String.class, Object.class);
-        hashOperations().putAll(key, map);
-    }
-
-    /**
-     * 设置键值并设置过期时间
-     *
-     * @param key     键
-     * @param value   值
-     * @param timeout 过期时间
-     * @param unit    过期时间的单位
-     */
-    public void setHashAll(String key, Object value, long timeout, TimeUnit unit) {
-        this.setHashAll(key, value);
-        this.setExpire(key, timeout, unit);
-    }
-
-    /**
-     * 设置键值并设置过期时间（单位秒）
-     *
-     * @param key     键
-     * @param value   值
-     * @param timeout 过期时间,单位：秒
-     */
-    public void setHashAll(String key, Object value, long timeout) {
-        this.setHashAll(key, value, timeout, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 从redis中获取hash类型数据
-     *
-     * @param key 缓存中的key
-     * @return redis 中hash数据
-     */
-    public Map<String, Object> getMapHashAll(String key) {
-        return hashOperations().entries(key);
-    }
-
-    /**
-     * 根据指定clazz类型从redis中获取对应的实例
-     *
-     * @param key   缓存key
-     * @param clazz hash对应java类的class
-     * @param <T>   redis中hash对应的java类型
-     * @return clazz实例
-     */
-    public <T> T getHashAll(String key, Class<T> clazz) {
-        Map<String, Object> entries = hashOperations().entries(key);
-        if (ObjectUtils.isEmpty(entries)) {
-            return null;
-        }
-        return JsonUtils.objectCovertToObject(entries, clazz);
-    }
-
-    /**
-     * 根据key删除缓存
-     *
-     * @param key    要删除的key
-     * @param fields key对应的hash数据的键值(HashKey)，可变参数列表
-     * @return hash删除的属性数量
-     */
-    public Long deleteHashField(String key, String... fields) {
-        if (ObjectUtils.isEmpty(key) || ObjectUtils.isEmpty(fields)) {
-            return 0L;
-        }
-        return hashOperations().delete(key, (Object[]) fields);
-    }
-
-    /**
-     * 将value添加至key对应的列表中
-     *
-     * @param key   缓存key
+     * @param key Redis键
+     * @param hKey Hash键
      * @param value 值
      */
-    public void listPush(String key, V value) {
-        listOperations().rightPush(key, value);
+    public <T> void setCacheMapValue(final String key, final String hKey, final T value) {
+        redisTemplate.opsForHash().put(key, hKey, value);
     }
 
     /**
-     * 将value添加至key对应的列表中，并添加过期时间
+     * 获取Hash中的数据
      *
-     * @param key     缓存key
-     * @param value   值
-     * @param timeout key的存活时间
-     * @param unit    时间单位
+     * @param key Redis键
+     * @param hKey Hash键
+     * @return Hash中的对象
      */
-    public void listPush(String key, V value, long timeout, TimeUnit unit) {
-        listOperations().rightPush(key, value);
-        this.setExpire(key, timeout, unit);
+    public <T> T getCacheMapValue(final String key, final String hKey) {
+        HashOperations<String, String, T> opsForHash = redisTemplate.opsForHash();
+        return opsForHash.get(key, hKey);
     }
 
     /**
-     * 将value添加至key对应的列表中，并添加过期时间
-     * 默认单位是秒(s)
+     * 删除Hash中的数据
      *
-     * @param key     缓存key
-     * @param value   值
-     * @param timeout key的存活时间
+     * @param key
+     * @param hkey
      */
-    public void listPush(String key, V value, long timeout) {
-        this.listPush(key, value, timeout, TimeUnit.SECONDS);
+    public void delCacheMapValue(final String key, final String hkey) {
+        HashOperations hashOperations = redisTemplate.opsForHash();
+        hashOperations.delete(key, hkey);
     }
 
     /**
-     * 将传入的参数列表添加至key的列表中
+     * 获取多个Hash中的数据
      *
-     * @param key    缓存key
-     * @param values 值列表
-     * @return 存入数据的长度
+     * @param key Redis键
+     * @param hKeys Hash键集合
+     * @return Hash对象集合
      */
-    public Long listPushAll(String key, Collection<V> values) {
-        return listOperations().rightPushAll(key, values);
+    public <T> List<T> getMultiCacheMapValue(final String key, final Collection<Object> hKeys) {
+        return redisTemplate.opsForHash().multiGet(key, hKeys);
     }
 
     /**
-     * 将传入的参数列表添加至key的列表中，并设置key的存活时间
+     * 获得缓存的基本对象列表
      *
-     * @param key     缓存key
-     * @param values  值列表
-     * @param timeout key的存活时间
-     * @param unit    时间单位
-     * @return 存入数据的长度
+     * @param pattern 字符串前缀
+     * @return 对象列表
      */
-    public Long listPushAll(String key, Collection<V> values, long timeout, TimeUnit unit) {
-        Long count = listOperations().rightPushAll(key, values);
-        this.setExpire(key, timeout, unit);
-        return count;
-    }
-
-    /**
-     * 将传入的参数列表添加至key的列表中，并设置key的存活时间
-     *  默认单位是秒(s)
-     *
-     * @param key     缓存key
-     * @param values  值列表
-     * @param timeout key的存活时间
-     * @return 存入数据的长度
-     */
-    public Long listPushAll(String key, Collection<V> values, long timeout) {
-        return this.listPushAll(key, values, timeout, TimeUnit.SECONDS);
-    }
-
-    /**
-     * 根据key获取list列表
-     *
-     * @param key 缓存key
-     * @return key对应的list列表
-     */
-    public Collection<V> getList(String key) {
-        Long size = listOperations().size(key);
-        if (size == null || size == 0) {
-            return null;
-        }
-        return listOperations().range(key, 0, (size - 1));
-    }
-
-    /**
-     * value操作集
-     *
-     * @return ValueOperations
-     */
-    private ValueOperations<String, V> valueOperations() {
-        return redisTemplate.opsForValue();
-    }
-
-    /**
-     * hash操作集
-     *
-     * @return ValueOperations
-     */
-    private HashOperations<String, String, Object> hashOperations() {
-        return redisHashTemplate.opsForHash();
-    }
-
-    /**
-     * hash操作集
-     *
-     * @return ValueOperations
-     */
-    private ListOperations<String, V> listOperations() {
-        return redisTemplate.opsForList();
+    public Collection<String> keys(final String pattern)
+    {
+        return redisTemplate.keys(pattern);
     }
 }

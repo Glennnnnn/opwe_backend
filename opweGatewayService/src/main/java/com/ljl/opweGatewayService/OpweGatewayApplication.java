@@ -3,6 +3,7 @@ package com.ljl.opweGatewayService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * @Author Liu Jialin
@@ -14,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @MapperScan("com.ljl.opweGatewayService.dao")
 @SpringBootApplication
+@EnableFeignClients
 public class OpweGatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(OpweGatewayApplication.class, args);
