@@ -102,9 +102,10 @@ public class JwtUtils {
      */
     public static Claims parseJWT(String jwt) throws Exception {
         SecretKey secretKey = generalKey();
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(jwt)
+        return Jwts.parserBuilder()            // Use the parserBuilder() method
+                .setSigningKey(secretKey)   // Set the signing key
+                .build()                    // Build the parser
+                .parseClaimsJws(jwt)        // Parse the JWT
                 .getBody();
     }
 

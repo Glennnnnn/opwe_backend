@@ -39,11 +39,28 @@ public class UserController {
         return responseResultPo;
     }
 
+    @GetMapping("/queryUserCredit")
+    public ResponseResultPo queryUserCredit(@RequestParam Long userId){
+        ResponseResultPo responseResultPo = new ResponseResultPo<>();
+        try{
+            responseResultPo.setData(userService.queryUserCredit(userId));
+            responseResultPo.setCode(HttpStatus.OK.value());
+            responseResultPo.setMsg("success");
+        }catch(Exception e){
+            e.printStackTrace();
+            responseResultPo.setCode(HttpStatus.BAD_REQUEST.value());
+            responseResultPo.setMsg("failed");
+        }
+        return responseResultPo;
+    }
+
     @RabbitListener(queues = "opwe.settlement.orderQueue1")
     public void listenDirectQueue1(String msg) {
         JSONObject jsonObject = JSONObject.parseObject(msg);
         userService.confirmUserOrder(jsonObject.getLong("userId"), jsonObject.getFloatValue("orderAmount"));
         System.out.println("消费者1接收到opwe.settlement.orderQueue1的消息：【" + msg + "】");
     }
+
+
 
 }

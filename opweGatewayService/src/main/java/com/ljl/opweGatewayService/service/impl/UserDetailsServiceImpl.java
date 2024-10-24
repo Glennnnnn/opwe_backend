@@ -30,9 +30,9 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
 //
     @Autowired
     MenuAuthMapper menuAuthMapper;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
+//
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
     @Override
     public Mono<UserDetails> findByUsername(String username) {
         // TODO call another service to get user list
@@ -41,8 +41,8 @@ public class UserDetailsServiceImpl implements ReactiveUserDetailsService {
             throw new UsernameNotFoundException("Username not found!");
         } else {
             //2.get password and encrypt it
-          String enPassword = passwordEncoder.encode(userPoList.get(0).getUserPassword());
-          System.out.println(enPassword);
+//          String enPassword = passwordEncoder.encode(userPoList.get(0).getUserPassword());
+//          System.out.println(enPassword);
             List<String> permissionList = new ArrayList<>();
             // TODO call another service to get permission list
             permissionList = menuAuthMapper.checkUserAuthByUserId(String.valueOf(userPoList.get(0).getUserId()));

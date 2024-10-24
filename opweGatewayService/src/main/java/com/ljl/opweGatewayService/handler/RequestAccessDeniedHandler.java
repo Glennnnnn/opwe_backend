@@ -1,6 +1,5 @@
 package com.ljl.opweGatewayService.handler;
 
-import cn.hutool.json.JSONUtil;
 import com.ljl.opweGatewayService.entity.common.ResponseResultPo;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -18,15 +17,16 @@ import java.nio.charset.Charset;
 /**
  * 自定义返回结果：没有权限访问时
  */
-@Component
-public class RequestAccessDeniedHandler implements ServerAccessDeniedHandler {
-    @Override
-    public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(HttpStatus.OK);
-        response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        String body = JSONUtil.toJsonStr(new ResponseResultPo<>(1005, "无权限访问", null));
-        DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(Charset.forName("UTF-8")));
-        return response.writeWith(Mono.just(buffer));
-    }
+//@Component
+//public class RequestAccessDeniedHandler implements ServerAccessDeniedHandler {
+    public class RequestAccessDeniedHandler{
+//    @Override
+//    public Mono<Void> handle(ServerWebExchange exchange, AccessDeniedException denied) {
+//        ServerHttpResponse response = exchange.getResponse();
+//        response.setStatusCode(HttpStatus.OK);
+//        response.getHeaders().add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+//        String body = JSONUtil.toJsonStr(new ResponseResultPo<>(1005, "无权限访问", null));
+//        DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(Charset.forName("UTF-8")));
+//        return response.writeWith(Mono.just(buffer));
+//    }
 }

@@ -19,7 +19,7 @@ public class GatewayController {
     @Autowired
     GatewayService gatewayService;
 
-    @GetMapping("routeToOpenService")
+    @GetMapping("/routeToOpenService")
     public ResponseResultPo routeToOpenService(){
         ResponseResultPo responseResultPo = new ResponseResultPo();
         responseResultPo.setData(gatewayService.routeToOpenService());

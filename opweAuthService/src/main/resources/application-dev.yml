@@ -46,9 +46,9 @@ eureka:
   client:
     service-url:
       defaultZone: http://47.93.162.44:8761/eureka/
-#  instance:
-#    instance-id: opweOpenService01
-#    prefer-ip-address: true
+  instance:
+    instance-id: opwe-auth-service
+    prefer-ip-address: true
 
 mybatis:
   # mybatis配置文件所在位置

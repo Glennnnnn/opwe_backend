@@ -16,4 +16,6 @@ public interface UserService {
     int insertUser(UserPo userPo);
 
     Float confirmUserOrder(Long userId, Float orderAmount);
+
+    Float queryUserCredit(Long userId);
 }

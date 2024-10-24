@@ -29,7 +29,7 @@ public class JwtUtil {
     //expire in
     public static final Long JWT_TTL = 8 * 60 * 60 *1000L;// 60 * 60 *1000  一个小时
     //key, minimal length is 6
-    public static final String JWT_SECRET = "superglenn";
+    public static final String JWT_SECRET = "thisIsTheJwtSecretKeyForOneProjectWithEverythingAuthModule";
 
     public String getUUID(){
         String token = UUID.randomUUID().toString().replaceAll("-", "");

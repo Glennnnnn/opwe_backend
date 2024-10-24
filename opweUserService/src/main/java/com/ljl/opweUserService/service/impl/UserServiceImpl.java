@@ -50,4 +50,10 @@ public class UserServiceImpl implements UserService {
         userMapper.updateUserCredit(userId, creditAfterConfirm);
         return creditAfterConfirm;
     }
+
+    public Float queryUserCredit(Long userId){
+        return userMapper.queryCurUserCredit(userId);
+    }
+
+
 }

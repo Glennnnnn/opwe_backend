@@ -52,13 +52,13 @@ public class LoginServiceImpl implements LoginService {
         JSONObject jsonObject = new JSONObject();
         String userPoId = String.valueOf(loginUserPo.getUserPo().getUserId());
         jsonObject.put("userData", loginUserPo);
-        String jwtToken = JwtUtils.createJWT(jsonObject.toString());
+        String jwtToken = JwtUtils.createJWT(userPoId);
 
         // 存入redis userid作为key
         redisUtils.setCacheObject("token:" + userPoId, loginUserPo);
         // 返回结果
-        HashMap<String, String> resultJson = new HashMap<>();
-        resultJson.put("token", jwtToken);
+//        HashMap<String, String> resultJson = new HashMap<>();
+//        resultJson.put("token", jwtToken);
         return jwtToken;
     }
 

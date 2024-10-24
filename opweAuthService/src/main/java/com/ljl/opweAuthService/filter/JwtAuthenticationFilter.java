@@ -70,8 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         //retrieve user info from redis
         String redisKey = "token:" + userId;
-        JSONObject jsonObject = redisUtils.getCacheObject(redisKey);
-        AuthUserPo loginUserPo = jsonObject.toJavaObject(AuthUserPo.class);
+        AuthUserPo loginUserPo = redisUtils.getCacheObject(redisKey);
 //        if(Objects.isNull(loginUserPo)){
 //            throw new RuntimeException("User not exist");
 //        }

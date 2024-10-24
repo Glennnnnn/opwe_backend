@@ -58,7 +58,6 @@ eureka:
     lease-renewal-interval-in-seconds: 5 # the interval of heartbeats that the client sends to the server. default 30s
     lease-expiration-duration-in-seconds: 15 # the time of the instance last. default 90s
 
-
 #mybatis:
 #  # mybatis配置文件所在位置
 #  config-location: classpath:mybatis-config.xml
