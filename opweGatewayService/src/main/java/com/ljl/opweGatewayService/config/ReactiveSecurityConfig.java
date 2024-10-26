@@ -50,7 +50,7 @@ public class ReactiveSecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeExchange(exchanges -> exchanges
-                    .pathMatchers("/auth/login/**").permitAll()
+                    .pathMatchers("/authService/login/**").permitAll()
                     .anyExchange().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION) // Add JWT filter

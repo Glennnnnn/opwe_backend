@@ -27,7 +27,7 @@ spring:
           uri: lb://opwe-auth-service
           predicates:
             ## Path Route Predicate Factory断言
-            - Path=/auth/**
+            - Path=/authService/**
         - id: opwe-user-service
           uri: lb://opwe-user-service
           predicates:

@@ -4,9 +4,12 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ljl.opweUserService.entity.common.ResponseResultPo;
 import com.ljl.opweUserService.entity.pos.UserPo;
 import com.ljl.opweUserService.service.UserService;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -40,6 +43,9 @@ public class UserController {
     }
 
     @GetMapping("/queryUserCredit")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RolesAllowed("ADMIN")
+//    @Secured("ROLE_ADMIN")
     public ResponseResultPo queryUserCredit(@RequestParam Long userId){
         ResponseResultPo responseResultPo = new ResponseResultPo<>();
         try{

@@ -46,6 +46,7 @@ public class AuthUserDetailService implements UserDetailsService {
             List<String> userRoles = userAuthMapper.queryUserRoleByUsername(username);
             List<SimpleGrantedAuthority> roleList = userRoles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+//                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .collect(Collectors.toList());
 //            AuthUserPo authUserPo = new AuthUserPo();
 //            authUserPo.setPassword(enPassword);

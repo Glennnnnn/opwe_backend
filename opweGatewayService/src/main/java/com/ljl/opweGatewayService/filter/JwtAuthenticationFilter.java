@@ -45,9 +45,7 @@ public class JwtAuthenticationFilter extends AuthenticationWebFilter {
 //    public JwtAuthenticationFilter(JwtUtil jwtUtil){
 //        this.jwtUtil = jwtUtil;
 //    }
-
-
-    @Autowired
+    
     public JwtAuthenticationFilter(JwtUtil jwtUtil, ReactiveUserDetailsService userDetailsService, AuthServiceClient authServiceClient) {
         super(new JwtReactiveAuthenticationManager(jwtUtil, userDetailsService));  // Custom manager to handle JWT
         this.jwtUtil = jwtUtil;
@@ -60,7 +58,10 @@ public class JwtAuthenticationFilter extends AuthenticationWebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
-
+        String path = exchange.getRequest().getPath().toString();
+        if ("/authService/login".equals(path)) {
+            return chain.filter(exchange); // Bypass filter for login endpoint
+        }
         // Validate token and proceed if valid
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
@@ -90,10 +91,19 @@ public class JwtAuthenticationFilter extends AuthenticationWebFilter {
                                             List<GrantedAuthority> authorities = jsonObject.getJSONArray("authorities")
                                                     .toJavaList(GrantedAuthority.class); // Adjust the key as needed
 
+
+                                            JSONObject authJson = new JSONObject();
+                                            authJson.put("username", username);
+                                            authJson.put("authorities", authorities);
                                             // Create the UsernamePasswordAuthenticationToken
                                             UsernamePasswordAuthenticationToken auth =
                                                     new UsernamePasswordAuthenticationToken(username, password, authorities);
                                             // Set Authentication in ReactiveSecurityContext and filter the chain
+                                            String authDataHeader = authJson.toString(); // Convert JSON to string
+                                            exchange.getRequest().mutate()
+                                                    .header("X-Custom-Auth", authDataHeader) // Custom header
+                                                    .build();
+
                                             return Mono.defer(() -> chain.filter(exchange)
                                                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth)));
 //                                            return chain.filter(exchange);
