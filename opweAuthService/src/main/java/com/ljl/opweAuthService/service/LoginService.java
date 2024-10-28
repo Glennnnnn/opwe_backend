@@ -1,6 +1,7 @@
 package com.ljl.opweAuthService.service;
 
 import com.ljl.opweAuthService.entity.common.ResponseResultPo;
+import com.ljl.opweAuthService.entity.dtos.LoginResponseDto;
 import com.ljl.opweAuthService.entity.pos.UserPo;
 
 /**
@@ -12,7 +13,7 @@ import com.ljl.opweAuthService.entity.pos.UserPo;
  * @Version 1.0.0
  */
 public interface LoginService {
-    String login(UserPo userPo);
+    LoginResponseDto login(UserPo userPo);
 
     ResponseResultPo logout();
 }

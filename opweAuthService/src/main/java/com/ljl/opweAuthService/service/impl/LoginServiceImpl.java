@@ -3,6 +3,8 @@ package com.ljl.opweAuthService.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.ljl.opweAuthService.dao.UserAuthMapper;
 import com.ljl.opweAuthService.entity.common.ResponseResultPo;
+import com.ljl.opweAuthService.entity.dtos.LoginResponseDto;
+import com.ljl.opweAuthService.entity.dtos.LoginUserResDto;
 import com.ljl.opweAuthService.entity.pos.AuthUserPo;
 import com.ljl.opweAuthService.entity.pos.UserPo;
 import com.ljl.opweAuthService.service.LoginService;
@@ -39,7 +41,7 @@ public class LoginServiceImpl implements LoginService {
     RedisUtils redisUtils;
 
     @Override
-    public String login(UserPo userPo) {
+    public LoginResponseDto login(UserPo userPo) {
         // authenticationManager authenticate 进行用户认证
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userPo.getUserName(), userPo.getUserPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
@@ -59,7 +61,15 @@ public class LoginServiceImpl implements LoginService {
         // 返回结果
 //        HashMap<String, String> resultJson = new HashMap<>();
 //        resultJson.put("token", jwtToken);
-        return jwtToken;
+        LoginUserResDto loginUserResDto = new LoginUserResDto(
+                loginUserPo.getUserPo().getUserId(),
+                loginUserPo.getUserPo().getUserName(),
+                loginUserPo.getUserPo().getUserEmail(),
+                loginUserPo.getUserPo().getUserPhone(),
+                loginUserPo.getUserPo().getUserRoleName()
+        );
+        LoginResponseDto result = new LoginResponseDto(loginUserResDto, jwtToken);
+        return result;
     }
 
     @Override

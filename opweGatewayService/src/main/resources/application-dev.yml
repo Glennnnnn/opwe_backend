@@ -43,6 +43,14 @@ spring:
           discovery:
             enabled: true
           discovery-service-id: config-server
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:3000"  # Allow your frontend origin
+            allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"  # Allow specific HTTP methods
+            allowedHeaders: "*"  # Allow all headers
+            allowCredentials: true  # Allow credentials (e.g., cookies,
 #  instance:
 #    instance-id: opweOpenService01
 #    prefer-ip-address: true

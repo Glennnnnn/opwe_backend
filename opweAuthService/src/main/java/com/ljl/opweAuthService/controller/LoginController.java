@@ -2,6 +2,7 @@ package com.ljl.opweAuthService.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ljl.opweAuthService.entity.common.ResponseResultPo;
+import com.ljl.opweAuthService.entity.dtos.LoginResponseDto;
 import com.ljl.opweAuthService.entity.pos.UserPo;
 import com.ljl.opweAuthService.service.LoginService;
 import com.ljl.opweAuthService.service.UserService;
@@ -39,8 +40,8 @@ public class LoginController {
         ResponseResultPo responseResultPo = new ResponseResultPo();
         //userPo.setUserId(userService.checkUserByName(userPo.getUsername()).get(0).getUserId());
         try{
-            String token = loginService.login(userPo);
-            responseResultPo.setData(token);
+            LoginResponseDto loginResponseDto = loginService.login(userPo);
+            responseResultPo.setData(loginResponseDto);
             responseResultPo.setCode(HttpStatus.SC_OK);
             responseResultPo.setMsg("success");
         } catch (Exception e){
