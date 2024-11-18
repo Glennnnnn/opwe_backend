@@ -60,6 +60,21 @@ public class UserController {
         return responseResultPo;
     }
 
+    @GetMapping("/testRequestToOpenService")
+    public ResponseResultPo testRequestToOpenService(){
+        ResponseResultPo responseResultPo = new ResponseResultPo<>();
+        try{
+            responseResultPo.setData(userService.testRequestToOpenService());
+            responseResultPo.setCode(HttpStatus.OK.value());
+            responseResultPo.setMsg("success");
+        }catch(Exception e){
+            e.printStackTrace();
+            responseResultPo.setCode(HttpStatus.BAD_REQUEST.value());
+            responseResultPo.setMsg("failed");
+        }
+        return responseResultPo;
+    }
+
     @RabbitListener(queues = "opwe.settlement.orderQueue1")
     public void listenDirectQueue1(String msg) {
         JSONObject jsonObject = JSONObject.parseObject(msg);

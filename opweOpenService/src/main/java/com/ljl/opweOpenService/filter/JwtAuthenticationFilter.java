@@ -1,8 +1,8 @@
-package com.ljl.opweUserService.filter;
+package com.ljl.opweOpenService.filter;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ljl.opweUserService.manager.FeignThreadLocalManager;
+import com.ljl.opweOpenService.manager.FeignThreadLocalManager;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Convert authorities to List<GrantedAuthority>
             List<GrantedAuthority> authorities = authoritiesArray.stream()
                     .map(auth -> new SimpleGrantedAuthority(((JSONObject) authoritiesArray.get(0)).get("authority").toString())
-            ).collect(Collectors.toList());
+                    ).collect(Collectors.toList());
 
             // Create the authentication token
             UsernamePasswordAuthenticationToken auth =
