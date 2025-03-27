@@ -11,4 +11,5 @@ opwe-data-process-service 8088 8089
 opwe-elasticsearch-service 8090
 opwe-user-service 8091 8092
 ```
-![pw](C:\Users\64969\Desktop\opwe.png)
+
+![Uploading opwe.png…]()
