@@ -12,4 +12,4 @@ opwe-elasticsearch-service 8090
 opwe-user-service 8091 8092
 ```
 
-![Uploading opwe.png…]()
+![opwe](https://github.com/user-attachments/assets/e91fa928-0de8-46fd-bf57-28e59919e9a5)
