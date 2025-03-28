@@ -1,5 +1,5 @@
 ## OPWE handbook
-project deployed on http://13.210.111.21, however, due to EC2 server limitation, not all backend service is deployed now.
+project deployed on http://13.210.111.21, however, due to EC2 server limitation, not all backend services are deployed now.
 Currently available page is the profile page, you can find it at http://13.210.111.21/ProfilePage.
 ### Basic service logics
 
