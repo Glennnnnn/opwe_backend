@@ -1,4 +1,6 @@
 ## OPWE handbook
+project deployed on http://13.210.111.21, however, due to EC2 server limitation, not all backend service is deployed now.
+Currently available page is the profile page, you can find it at http://13.210.111.21/ProfilePage.
 ### Basic service logics
 
 All request will come through gateway-service for dispatching and load balance, services are registered to eureka service. Gateway will call auth service through open-feign to do login and verification, then route to the corresponding service or reject the request based on the response of auth-service.
