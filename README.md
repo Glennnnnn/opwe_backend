@@ -1,5 +1,7 @@
 ### OPWE handbook
+Basic service logics
 
+All request will come through gateway-service for dispatching and load balance, services are registered to eureka service. Gateway will call auth service through open-feign to do login and verification, then route to the corresponding service or reject the request based on the response of auth-service.
 ```
 opwe-open-service 8081 8082
 opwe_eureka_service 8761
@@ -16,6 +18,4 @@ opwe-user-service 8091 8092
 ![opwe](https://github.com/user-attachments/assets/732bd802-62cb-445e-be4d-0b32647cd78e)
 ![Login](https://github.com/user-attachments/assets/b83daae3-bcc4-43eb-b2f1-fe66e58e6448)
 ![Basic request](https://github.com/user-attachments/assets/aa6c3825-d246-4bcc-93fb-68b9eb86a510)
-### Basic service logics
 
-All request will come through gateway-service for dispatching and load balance, services are registered to eureka service. Gateway will call auth service through open-feign to do login and verification, then route to the corresponding service or reject the request based on the response of auth-service.
